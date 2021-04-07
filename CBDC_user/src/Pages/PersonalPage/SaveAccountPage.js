@@ -4,7 +4,7 @@ import { faChevronLeft, faHome, faBars } from '@fortawesome/free-solid-svg-icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { history } from '../../_helpers';
 
-const SaveAccountPage = () => {
+const SaveAccountPage = ({userInfo}) => {
     return (
         <div>
             <Header>
@@ -25,13 +25,13 @@ const SaveAccountPage = () => {
                         <div style={{display: 'flex', justifyContent: 'space-between' }}>
                             <CardChildName>저축예금</CardChildName>
                             <div style={{fontWeight: 600, fontSize: '5vw', marginRight: 20}}>
-                                1,000,000 원
+                                {userInfo.fiat_balance&&userInfo.fiat_balance.toLocaleString()} 원
                             </div>
                         </div>
                         <div style={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginTop: 10}}>
                             <Button1 
                                 style={{marginLeft: 5}}
-                                onClick={() => history.push('/personal/transfer')}
+                                // onClick={() => history.push('/personal/transfer')}
                             >
                                 이체
                             </Button1>
@@ -40,7 +40,7 @@ const SaveAccountPage = () => {
                                     marginLeft: 5, 
                                     marginRight: 20
                                 }}
-                                onClick={() => history.push('/personal/deal/cbdc/common')}
+                                onClick={() => history.push('/personal/deal/save')}
                             >
                                 거래내역
                             </Button2>

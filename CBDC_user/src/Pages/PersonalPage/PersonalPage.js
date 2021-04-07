@@ -4,7 +4,10 @@ import { faChevronLeft, faHome, faBars } from '@fortawesome/free-solid-svg-icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { history } from '../../_helpers';
 
-const PersonalPage = () => {
+const PersonalPage = ({userInfo}) => {
+    
+    const totalCBDC = userInfo.common_cbdc_balance + userInfo.reduce_cbdc_balance + userInfo.extinct_cbdc_balance
+
     return (
         <div>
             <Header>
@@ -22,11 +25,11 @@ const PersonalPage = () => {
             <Body>
                 <Button style={{marginTop: 40}} href="personal/save">
                     <div>저축예금</div>
-                    <div><span style={{color: "#212121"}}>1,000,000</span> 원</div>
+                    <div><span style={{color: "#212121"}}>{userInfo.fiat_balance&&userInfo.fiat_balance.toLocaleString()}</span> 원</div>
                 </Button>
                 <Button style={{marginTop: 15}} href="personal/CBDC">
                     <div>CBDC</div>
-                    <div><span style={{color: "#212121"}}>800,000</span> D-KRW</div>
+                    <div><span style={{color: "#212121"}}>{totalCBDC&&totalCBDC.toLocaleString()}</span> D-KRW</div>
                 </Button>
             </Body>
         </div>

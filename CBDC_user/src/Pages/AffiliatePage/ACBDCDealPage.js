@@ -1,11 +1,36 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import { faChevronLeft, faHome, faChevronDown, faChevronUp, faSearch, faCog } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { history } from '../../_helpers'
+import { dbService } from "../../fbase"
 
-const ACBDCDealPage = () => {
+const ACBDCDealPage = ({affiliateInfo}) => {
+    const userInfo = affiliateInfo
+    const [txs,setTxs] = useState([])
+    const curDate = new Date().getUTCFullYear().toString()+"-"+(new Date().getUTCMonth()+1).toString()
+    const getUserTxHistory = async(e) =>{
+        try{
+            //추후 set으로 바꿔서 receiver, sender 둘다 확인 후 가져오게 하는게 좋을 듯
+            const userQuerySnapshot = await dbService
+                .collection(`TxInfo`)
+                .where('receiver_account','==',userInfo.account)
+                .orderBy('transaction_date','desc')
+                .get()
+            const txsArray = userQuerySnapshot.docs.map((doc)=>({
+                            ...doc.data()
+                        }))
+            console.log(txsArray)
+            setTxs(txsArray.filter(tx => tx.cbdc_type === "common"))
+        }catch(error){
+            console.log(error)
+        }  
+    }
+    useEffect(() =>{
+        getUserTxHistory()
+    },[userInfo])
     const [state, setState] = useState(false)
+
     return (
         <div>
             <Header>
@@ -32,7 +57,7 @@ const ACBDCDealPage = () => {
                     <div style={{display: 'flex', flexDirection: 'column', padding: '0 4vw'}}>
                         <div style={{marginTop: '2vw', color: '#000', fontSize:'3.73vw'}}>CBDC-일반자금</div>
                         <div style={{marginTop: '6vw', display: 'flex', justifyContent: 'flex-end', position: 'relative'}}>
-                            <div style={{fontSize: '6vw'}}>500,000 <span style={{fontSize: '4vw'}}>D-KRW</span></div>
+                            <div style={{fontSize: '6vw'}}>{userInfo.common_cbdc_balance&&userInfo.common_cbdc_balance.toLocaleString()} <span style={{fontSize: '4vw'}}>D-KRW</span></div>
                         </div>
                     </div>
                 </CardChild>
@@ -48,7 +73,7 @@ const ACBDCDealPage = () => {
                 </Tools>
                 <List>
                     <ListHeader>
-                        <ListDate>2021-02</ListDate>
+                        <ListDate>{curDate}</ListDate>
                         <ListShow
                             onClick={() => setState(!state)}
                         >
@@ -59,24 +84,30 @@ const ACBDCDealPage = () => {
                         </ListShow>
                     </ListHeader>
                     {!state && <ListBody>
-                        <ListItem>
+                        {
+                        txs.map((tx,index)=>(
+                        <ListItem key={index}>
                             <ListItemLeft>
-                                <Time>02.01(월) 07:45:19</Time>
-                                <Content>교환</Content>
+                                <Time>{tx.transaction_date}</Time>
+                                <Content>{tx.receiver_name} {' '} {tx.transaction_type}</Content>
                             </ListItemLeft>
-                            <ListItemRight style={{textAlign: 'right'}}>
-                                - 40,000 D-KRW
+                            <ListItemRight style={{textAlign: 'right'}}>    
+                                {
+                                    tx.receiver_name === userInfo.name
+                                    ?(
+                                        <>{(tx.amount).toLocaleString()}</>
+                                    )
+                                    :
+                                    (
+                                        <></>
+                                    )
+                                }
+                                <br/>
+                                D-KRW
                             </ListItemRight>
                         </ListItem>
-                        <ListItem>
-                            <ListItemLeft>
-                                <Time>02.01(월) 07:40:18</Time>
-                                <Content>교환</Content>
-                            </ListItemLeft>
-                            <ListItemRight style={{textAlign: 'right'}}>
-                                + 100,000 D-KRW
-                            </ListItemRight>
-                        </ListItem>
+                        ))   
+                    }
                     </ListBody>}
                 </List>
             </Body>
@@ -86,7 +117,6 @@ const ACBDCDealPage = () => {
 }
 
 export { ACBDCDealPage }
-
 const Header = styled.div`
     background-color: #fff;
     height: 6.76vh;

@@ -1,56 +1,47 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import { faChevronLeft, faHome, faChevronDown, faChevronUp, faSearch, faCog } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { history } from '../../_helpers'
+import { dbService } from "../../fbase"
 
-const CBDCDealDisasterReductionPage = () => {
+const CBDCDealDisasterReductionPage = ({userInfo}) => {
+    const [txs,setTxs] = useState([])
+    const curDate = new Date().getUTCFullYear().toString()+"-"+(new Date().getUTCMonth()+1).toString()
+    const getUserTxHistory = async(e) =>{
+        try{
+            const userQuerySnapshot = await dbService
+                .collection(`TxInfo`)
+                .where('sender_account','==',userInfo.account)
+                .orderBy('transaction_date','desc')
+                .get()
+            const txsArray = userQuerySnapshot.docs.map((doc)=>({
+                            ...doc.data()
+                        }))
+            setTxs(txsArray.filter(tx => tx.cbdc_type === "reduce" && tx.transaction_type ==="결제"))
+        }catch(error){
+            console.log(error)
+        }  
+    }
+    useEffect(() =>{
+        getUserTxHistory()
+    },[userInfo])
     const [state, setState] = useState(false)
+
     return (
         <div>
             <Header>
+                <FontAwesomeIcon 
+                    icon={faChevronLeft} 
+                    style={{color: "#000", fontSize: '4vw', marginLeft: '5vw'}}
+                    onClick={() => history.push('/personal/CBDC')}
+                />
+                <HeaderText>거래내역조회</HeaderText>
                 <div style={{display: 'flex', alignItems: 'center'}}>
-                    <FontAwesomeIcon 
-                        icon={faChevronLeft} 
-                        style={{color: "#ffffff", fontSize: 20, marginLeft: 20}}
-                        onClick={() => history.push('/personal/CBDC')}
-                    />
-                    <button 
-                        style={{
-                            borderRadius: 10, 
-                            border: 'none',
-                            color: '#009ae8',
-                            marginLeft: 10,
-                            outline: 'none'
-                        }}
-                    >
-                        큰글씨
-                    </button>
-                </div>
-                <HeaderText 
-                    style={{
-                        marginRight: 20
-                    }}
-                >
-                    거래내역조회
-                </HeaderText>
-                <div 
-                    style={{
-                        display: 'flex', 
-                        alignItems: 'center'
-                    }}
-                >
-                    <FontAwesomeIcon 
-                        icon={faHome} 
-                        style={{
-                            color: "#ffffff", 
-                            fontSize: 20, 
-                            marginRight: 10
-                        }}
-                    />
+                    <FontAwesomeIcon icon={faHome} style={{color: "#000", fontSize: '4vw', marginRight: '3vw'}}/>
                     <Dbutton
                         style={{
-                            marginRight: 20
+                            marginRight: '4vw'
                         }}
                         onClick={() => history.push('/personal/CBDC')}
                     >
@@ -59,72 +50,61 @@ const CBDCDealDisasterReductionPage = () => {
                 </div>
             </Header>
             <Body>
-                <Card>
-                    <CardBody>
-                        <div 
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center'
-                            }}
-                        >
-                            <img 
-                                src={"/images/card-logo.png"} 
-                                alt="logo"
-                                style={{width: 18, height: 18, marginLeft: 15}}
-                            />
-                            <CardName>재난지원금 (감소형)</CardName>
+                <CardChild>
+                    <div style={{display: 'flex', flexDirection: 'column', padding: '0 4vw'}}>
+                        <div style={{marginTop: '2vw', color: '#000', fontSize:'3.73vw'}}>CBDC-재난지원(감소형)</div>
+                        <div style={{marginTop: '6vw', display: 'flex', justifyContent: 'flex-end', position: 'relative'}}>
+                            <div style={{fontSize: '6vw'}}>{userInfo.reduce_cbdc_balance&&userInfo.reduce_cbdc_balance.toLocaleString()} <span style={{fontSize: '4vw'}}>D-KRW</span></div>
                         </div>
-                        
-                        <div style={{display: 'flex' }}>
-                            <div 
-                                style={{
-                                    marginLeft: 'auto', 
-                                    marginRight: 30, 
-                                    marginTop: 30
-                                }}
-                            >
-                                1,200,000 D-KRW
-                            </div>
-                        </div>
-                    </CardBody>
-                </Card>
-                <div 
-                    style={{
-                        display: 'flex'
-                    }}
-                >
+                    </div>
+                </CardChild>
 
-                </div>
                 <Tools>
                     <IconButton>
-                        <FontAwesomeIcon icon={faSearch} />
+                        <FontAwesomeIcon icon={faSearch} style={{fontSize: '5.73vw'}} />
                     </IconButton>
-                    <SearchText>1개월ㆍ전체ㆍ최신</SearchText>
+                    <SearchText>1개월 &nbsp;&nbsp;&nbsp; 전체 &nbsp;&nbsp;&nbsp; 최신 &nbsp;&nbsp;&nbsp;</SearchText>
                     <IconButton>
-                        <FontAwesomeIcon icon={faCog} />
+                        <FontAwesomeIcon icon={faCog} style={{fontSize: '5.73vw'}}  />
                     </IconButton>
                 </Tools>
                 <List>
                     <ListHeader>
-                        <ListDate>2021-02</ListDate>
+                        <ListDate>{curDate}</ListDate>
                         <ListShow
                             onClick={() => setState(!state)}
                         >
                             <FontAwesomeIcon
                                 icon={state? faChevronDown : faChevronUp} 
+                                style={{fontSize: '3.7vw', color: '#00b2a7'}}
                             />
                         </ListShow>
                     </ListHeader>
                     {!state && <ListBody>
-                        <ListItem>
+                        {
+                        txs.map((tx,index)=>(
+                        <ListItem key={index}>
                             <ListItemLeft>
-                                <Time>02.01(월) 07:45:19</Time>
-                                <Content>하나분식 결제</Content>
+                                <Time>{tx.transaction_date}</Time>
+                                <Content>{tx.receiver_name} {' '} {tx.transaction_type}</Content>
                             </ListItemLeft>
-                            <ListItemRight style={{textAlign: 'right'}}>
-                                - 200,000 <br/>D-KRW
+                            <ListItemRight style={{textAlign: 'right'}}>    
+                                {
+                                    tx.receiver === userInfo.name
+                                    ?(
+                                        <>{tx.amount.toLocaleString()}</>
+                                    )
+                                    :
+                                    (
+                                        <>{(-tx.amount).toLocaleString()}</>
+                                    )
+                                }
+                                <br/>
+                                D-KRW
                             </ListItemRight>
                         </ListItem>
+                        ))   
+                    }
                     </ListBody>}
                 </List>
             </Body>
@@ -136,12 +116,14 @@ const CBDCDealDisasterReductionPage = () => {
 export { CBDCDealDisasterReductionPage }
 
 const Header = styled.div`
-    background-color: #009ae8;
-    height: 50px;
+    background-color: #fff;
+    height: 6.76vh;
     display: flex;
     align-items: center;
     justify-content: space-between;
     position: relative;
+    font-size: 4vw;
+    font-weight: 600;
 `
 const Body = styled.div`
     background-color: #f8f8f8;
@@ -151,37 +133,33 @@ const Body = styled.div`
     width: 100%;
 `
 const HeaderText = styled.div`
-    color: #ffffff;
+    color: #000;
 `
-const Card = styled.div`
-    background: #aeaeee;
+const CardChild = styled.div`
+    width: 90vw;
+    height: 12.31vh;
+    padding-top: 3.5vh;
+    padding-bottom: 3vh;
+    border-top: 1px solid #dcdcdc;
+    box-shadow: 1px 2px 6px 1px #bfcfea;
+    border-radius: 4vw;
+    margin-top: 4vw;
+    font-weight: 600;
     display: flex;
     flex-direction: column;
-    width: 90vw;
-    border-radius: 5px;
-    box-shadow: 1px 2px 6px 1px #bfcfea;
-    margin: auto;
-    margin-top: 20px;
-`
-const CardBody = styled.div`
-    padding-top: 20px;
-    padding-bottom: 20px;
-`
-const CardName = styled.div`
-    margin-left: 20px;
-    color: #414141;
-    font-size: 20px;
-    font-weight: 700;
+    justify-content: space-between;
 `
 const Tools = styled.div`
     width: 90vw;
-    height: 50px;
+    height: 5vh;
     display: flex;
-    align-items: center;
+    align-items: baseline;
+    justify-content: center;
+    margin-top: 4.53vh
 `
 const IconButton = styled.button`
-    width: 20px;
-    height: 20px;
+    // width: 20px;
+    // height: 20px;
     font-size: 15px;
     background: none;
     outline: none;
@@ -190,7 +168,7 @@ const IconButton = styled.button`
 `
 const SearchText = styled.div`
     color: #888888;
-    font-size: 15px;
+    font-size: 3.5vw;
     margin-left: auto;
 `
 const List = styled.div`
@@ -201,16 +179,16 @@ const List = styled.div`
 `
 const ListHeader = styled.div`
     width: 100vw;
-    height: 50px;
+    height: 5.47vh;
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid #efefef;
 `
 const ListDate = styled.div`
-    font-size: 16px;
+    font-size: 3.7vw;
     font-weight: 500;
-    margin-left: 20px;
+    margin-left: 6vw;
 `
 const ListShow = styled.button`
     background: none;
@@ -218,7 +196,7 @@ const ListShow = styled.button`
     outline: none;
     color: #aaaaaa;
     font-size: 13px;
-    margin-right: 15px;
+    margin-right: 6vw;
 `
 const ListBody = styled.div`
     display: flex;
@@ -228,35 +206,42 @@ const ListBody = styled.div`
 const ListItem = styled.div`
     display: flex;
     width: 90vw;
+    height: 9.86vh;
     padding-top: 20px;
     padding-bottom: 20px;
     justify-content: space-between;
+    align-items: center;
     border-bottom: 1px solid #efefef;
 `
 const ListItemLeft = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: start;
 `
 const Time = styled.div`
     color: #aaaaaa;
-    font-size: 13px;
+    font-size: 2.67vw;
 `
 const Content = styled.div`
     margin-top: 10px;
     color: #212121;
-    font-size: 15px;
+    font-size: 3.8vw;
+    font-weight: 600;
 `
 const ListItemRight = styled.div`
-    color: #8888aa;
+    color: #00b2a7;
+    font-size: 3.8vw;
+    font-weight: 600;
+    white-space: nowrap;
 `
 const Dbutton = styled.button`
     color: #ffffff;
-    border: 1px solid #000000;
-    background-color: #888888;
-    font-size: 15px;
-    width: 25px;
-    height: 25px;
-    border-radius: 12.5px;
+    background-color: #00b2a7;
+    font-size: 3.73vw;
+    font-weight: 600;
+    width: 4.5vw;
+    height: 4.5vw;
+    border-radius: 2vw;
+    border: none;
     text-align: center;
 `

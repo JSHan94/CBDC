@@ -4,7 +4,7 @@ import { faChevronLeft, faHome, faChevronDown, faChevronUp, faSearch, faCog } fr
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { history } from '../../_helpers'
 
-const ASaveDealPage = () => {
+const ASaveDealPage = ({affiliateInfo}) => {
     const [state, setState] = useState(false)
     return (
         <div>
@@ -32,7 +32,7 @@ const ASaveDealPage = () => {
                     <div style={{display: 'flex', flexDirection: 'column', padding: '0 4vw'}}>
                         <div style={{marginTop: '2vw', color: '#000', fontSize:'3.73vw'}}>기업자유예금</div>
                         <div style={{marginTop: '6vw', display: 'flex', justifyContent: 'flex-end', position: 'relative'}}>
-                            <div style={{fontSize: '6vw'}}>1,200,000 <span style={{fontSize: '4vw'}}>원</span></div>
+                            <div style={{fontSize: '6vw'}}>{affiliateInfo.fiat_balance&&affiliateInfo.fiat_balance.toLocaleString()} <span style={{fontSize: '4vw'}}>원</span></div>
                         </div>
                     </div>
                 </CardChild>

@@ -1,11 +1,42 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import { faChevronLeft, faHome, faChevronDown, faChevronUp, faSearch, faCog } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { history } from '../../_helpers'
+import { dbService } from "../../fbase"
 
-const CBDCDealCommonPage = () => {
+const CBDCDealCommonPage = ({userInfo}) => {
+    const [txs,setTxs] = useState([])
+    const curDate = new Date().getUTCFullYear().toString()+"-"+(new Date().getUTCMonth()+1).toString()
+    const getUserTxHistory = async(e) =>{
+        try{
+            var userQuerySnapshot = await dbService
+                .collection(`TxInfo`)
+                .get()
+            
+            const txsArray = userQuerySnapshot.docs.map((doc)=>({
+                ...doc.data()
+            })).sort(function(a,b){
+                if(a.transaction_date > b.transaction_date){
+                    return -1;
+                }
+                if(a.transaction_date < b.transaction_date){
+                    return 1;
+                }
+                return 0;
+            })
+            setTxs(txsArray.filter(tx => tx.cbdc_type === "common" 
+                && tx.sender_account ===userInfo.account))
+        }catch(error){
+            console.log(error)
+        }  
+    }
+    useEffect(() =>{
+        getUserTxHistory()
+        console.log(txs)
+    },[userInfo,setTxs])
     const [state, setState] = useState(false)
+
     return (
         <div>
             <Header>
@@ -32,7 +63,7 @@ const CBDCDealCommonPage = () => {
                     <div style={{display: 'flex', flexDirection: 'column', padding: '0 4vw'}}>
                         <div style={{marginTop: '2vw', color: '#000', fontSize:'3.73vw'}}>CBDC-일반자금</div>
                         <div style={{marginTop: '6vw', display: 'flex', justifyContent: 'flex-end', position: 'relative'}}>
-                            <div style={{fontSize: '6vw'}}>500,000 <span style={{fontSize: '4vw'}}>D-KRW</span></div>
+                            <div style={{fontSize: '6vw'}}>{userInfo.common_cbdc_balance&&userInfo.common_cbdc_balance.toLocaleString()} <span style={{fontSize: '4vw'}}>D-KRW</span></div>
                         </div>
                     </div>
                 </CardChild>
@@ -48,7 +79,7 @@ const CBDCDealCommonPage = () => {
                 </Tools>
                 <List>
                     <ListHeader>
-                        <ListDate>2021-02</ListDate>
+                        <ListDate>{curDate}</ListDate>
                         <ListShow
                             onClick={() => setState(!state)}
                         >
@@ -59,33 +90,30 @@ const CBDCDealCommonPage = () => {
                         </ListShow>
                     </ListHeader>
                     {!state && <ListBody>
-                        <ListItem>
+                        {
+                        txs.map((tx,index)=>(
+                        <ListItem key={index}>
                             <ListItemLeft>
-                                <Time>02.01(월) 07:45:19</Time>
-                                <Content>결제-하나카페</Content>
+                                <Time>{tx.transaction_date}</Time>
+                                <Content>{tx.receiver_name} {' '} {tx.transaction_type}</Content>
                             </ListItemLeft>
-                            <ListItemRight style={{textAlign: 'right'}}>
-                                - 100,000 D-KRW
+                            <ListItemRight style={{textAlign: 'right'}}>    
+                                {
+                                    tx.receiver === userInfo.name
+                                    ?(
+                                        <>{tx.amount.toLocaleString()}</>
+                                    )
+                                    :
+                                    (
+                                        <>{(-tx.amount).toLocaleString()}</>
+                                    )
+                                }
+                                <br/>
+                                D-KRW
                             </ListItemRight>
                         </ListItem>
-                        <ListItem>
-                            <ListItemLeft>
-                                <Time>02.01(월) 07:45:19</Time>
-                                <Content>이체-홍길동</Content>
-                            </ListItemLeft>
-                            <ListItemRight style={{textAlign: 'right'}}>
-                                - 100,000 D-KRW
-                            </ListItemRight>
-                        </ListItem>
-                        <ListItem>
-                            <ListItemLeft>
-                                <Time>02.01(월) 07:40:18</Time>
-                                <Content>교환</Content>
-                            </ListItemLeft>
-                            <ListItemRight style={{textAlign: 'right'}}>
-                                - 200,000 D-KRW
-                            </ListItemRight>
-                        </ListItem>
+                        ))   
+                    }
                     </ListBody>}
                 </List>
             </Body>

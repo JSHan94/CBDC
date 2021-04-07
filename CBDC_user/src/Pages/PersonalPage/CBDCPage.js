@@ -4,8 +4,10 @@ import { faChevronLeft, faHome, faBars, faTimes } from '@fortawesome/free-solid-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { history } from '../../_helpers';
 
-const CBDCPage = () => {
+const CBDCPage = ({userInfo}) => {
     const [modalshow, setModalshow] = useState(false)
+    const totalCBDC = userInfo.common_cbdc_balance + userInfo.reduce_cbdc_balance + userInfo.extinct_cbdc_balance
+
     return (
         <div>
             <Header>
@@ -24,7 +26,7 @@ const CBDCPage = () => {
                 <CardHeader>
                     <CardName>CBDC</CardName>
                     <div style={{display: 'flex', alignItems: 'center'}}>
-                        <CardName>1,300,000</CardName>
+                        <CardName>{totalCBDC&& totalCBDC.toLocaleString()}</CardName>
                         <CardMoney>D-KRW</CardMoney>    
                     </div>
                 </CardHeader>
@@ -33,7 +35,7 @@ const CBDCPage = () => {
                         <CardChildName>일반자금</CardChildName>
                         <div style={{display: 'flex' }}>
                             <div style={{marginLeft: 'auto', marginRight: 30, marginTop: 30, fontWeight: 600, fontSize: '6vw'}}>
-                                500,000 <span style={{fontSize: '4vw'}}>D-KRW</span>
+                            {userInfo.common_cbdc_balance&&userInfo.common_cbdc_balance.toLocaleString()} <span style={{fontSize: '4vw'}}>D-KRW</span>
                             </div>
                         </div>
                         <div style={{display: 'flex', alignItems: 'center', marginTop: 10}}>
@@ -49,7 +51,10 @@ const CBDCPage = () => {
                             </Button1>
                             <Button1 
                                 style={{marginLeft: 5}}
-                                onClick={() => history.push('/personal/payment')}
+                                onClick={() => history.push({
+                                    pathname :'/personal/payment'
+                                    ,state : {cbdcType : "common"}
+                                    })}
                             >
                                 결제
                             </Button1>
@@ -70,23 +75,16 @@ const CBDCPage = () => {
                         <div style={{marginLeft: 20, marginTop:5, fontSize: '3.73vw', color: '#00b2a7'}}>유효기간 2021.12.31</div>
                         <div style={{display: 'flex' }}>
                             <div style={{marginLeft: 'auto', marginRight: 30, marginTop: 30, fontWeight: 600, fontSize: '6vw'}}>
-                                300,000  <span style={{fontSize: '4vw'}}>D-KRW</span>
+                            {userInfo.extinct_cbdc_balance&&userInfo.extinct_cbdc_balance.toLocaleString()}  <span style={{fontSize: '4vw'}}>D-KRW</span>
                             </div>
                         </div>
                         <div style={{display: 'flex', alignItems: 'center', marginTop: 10}}>
                             <Button1 
                                 style={{marginLeft: 'auto'}}
-                                onClick={() => history.push('/personal/Exchange')}
-                            >교환</Button1>
-                            <Button1 
-                                style={{marginLeft: 5}}
-                                onClick={() => history.push('/personal/transfer')}
-                            >
-                                이체
-                            </Button1>
-                            <Button1 
-                                style={{marginLeft: 5}}
-                                onClick={() => history.push('/personal/payment')}
+                                onClick={() => history.push({
+                                    pathname :'/personal/payment'
+                                    ,state : {cbdcType : "extinct"}
+                                    })}
                             >
                                 결제
                             </Button1>
@@ -95,7 +93,7 @@ const CBDCPage = () => {
                                     marginLeft: 5, 
                                     marginRight: 20
                                 }}
-                                onClick={() => history.push('/personal/deal/cbdc/common')}
+                                onClick={() => history.push('/personal/deal/cbdc/disaster/Extinct')}
                             >
                                 거래내역
                             </Button2>
@@ -107,7 +105,7 @@ const CBDCPage = () => {
                         <div style={{marginLeft: 20, marginTop:5, fontSize: '3.73vw', color: '#00b2a7'}}>유효기간 2021.06.30</div>
                         <div style={{display: 'flex' }}>
                             <div style={{marginLeft: 'auto', marginRight: 30, marginTop: 30, fontWeight: 600, fontSize: '6vw'}}>
-                                500,000  <span style={{fontSize: '4vw'}}>D-KRW</span>
+                            {userInfo.reduce_cbdc_balance&&userInfo.reduce_cbdc_balance.toLocaleString()}  <span style={{fontSize: '4vw'}}>D-KRW</span>
                             </div>
                         </div>
                         <div style={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginTop: 10}}>
@@ -120,15 +118,13 @@ const CBDCPage = () => {
                             >
                                 기간별 잔액 확인하기
                             </Button2>
+                            
                             <Button1 
                                 style={{marginLeft: 5}}
-                                onClick={() => history.push('/personal/transfer')}
-                            >
-                                이체
-                            </Button1>
-                            <Button1 
-                                style={{marginLeft: 5}}
-                                onClick={() => history.push('/personal/payment')}
+                                onClick={() => history.push({
+                                    pathname :'/personal/payment'
+                                    ,state : {cbdcType : "reduce"}
+                                    })}
                             >
                                 결제
                             </Button1>
@@ -137,7 +133,7 @@ const CBDCPage = () => {
                                     marginLeft: 5, 
                                     marginRight: 20
                                 }}
-                                onClick={() => history.push('/personal/deal/cbdc/common')}
+                                onClick={() => history.push('/personal/deal/cbdc/disaster/Reduction')}
                             >
                                 거래내역
                             </Button2>

@@ -4,7 +4,7 @@ import { faChevronLeft, faHome, faBars } from '@fortawesome/free-solid-svg-icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { history } from '../../_helpers';
 
-const ACBDCPage = () => {
+const ACBDCPage = ({affiliateInfo}) => {
     return (
         <div>
             <Header>
@@ -25,7 +25,7 @@ const ACBDCPage = () => {
                         <CardChildName>CBDC</CardChildName>
                         <div style={{display: 'flex' }}>
                             <div style={{marginLeft: 'auto', marginRight: 30, marginTop: 30, fontWeight: 600, fontSize: '6vw'}}>
-                                100,000 <span style={{fontSize: '4vw'}}>D-KRW</span>
+                                {affiliateInfo.common_cbdc_balance &&affiliateInfo.common_cbdc_balance.toLocaleString()} <span style={{fontSize: '4vw'}}>D-KRW</span>
                             </div>
                         </div>
                         <div style={{display: 'flex', alignItems: 'center', marginTop: 10}}>

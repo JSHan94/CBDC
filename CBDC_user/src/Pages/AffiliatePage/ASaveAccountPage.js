@@ -4,7 +4,7 @@ import { faChevronLeft, faHome, faBars } from '@fortawesome/free-solid-svg-icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { history } from '../../_helpers';
 
-const ASaveAccountPage = () => {
+const ASaveAccountPage = ({affiliateInfo}) => {
     return (
         <div>
             <Header>
@@ -24,20 +24,20 @@ const ASaveAccountPage = () => {
                     <div style={{display: 'flex', alignItems: 'center' }}>
                         <CardChildName>기업자유예금</CardChildName>
                         <div style={{marginLeft: 'auto', marginRight: 30, fontWeight: 600, fontSize: '6vw'}}>
-                            500,000 <span style={{fontSize: '4vw'}}>D-KRW</span>
+                            {affiliateInfo.fiat_balance&&affiliateInfo.fiat_balance.toLocaleString()} <span style={{fontSize: '4vw'}}>D-KRW</span>
                         </div>
                     </div>
                     <div style={{display: 'flex', alignItems: 'center', marginTop: 10}}>
                         <Button1 
                             style={{marginLeft: 'auto'}}
-                            onClick={() => history.push('/affiliate/Exchange')}
+                            //onClick={() => history.push('/affiliate/Exchange')}
                         >이체</Button1>
                         <Button2 
                             style={{
                                 marginLeft: 5, 
                                 marginRight: 20
                             }}
-                            onClick={() => history.push('/affiliate/deal/save')}
+                            //onClick={() => history.push('/affiliate/deal/save')}
                         >
                             거래내역
                         </Button2>

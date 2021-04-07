@@ -1,20 +1,74 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import { faChevronLeft, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { history } from '../../_helpers';
+import { dbService, firebaseInstance } from "../../fbase";
+import GetDatetime from "../../_helpers/GetDatetime";
+import {useLocation} from "react-router"
 
-const PaymentPage = () => {
+const PaymentPage = ({userInfo,affiliateInfo}) => {
+    const location = useLocation()
     const [modalshow, setModalshow] = useState(false)
-    const pay = () => {
-        let ran = Math.random();
-        console.log(ran)
-        if (ran > 0.5) {
+    const [amount, setAmount] = useState(0)
+    const clickBtn = location.state.cbdcType
+    
+    useEffect(()=>{
+        console.log(location.state.cbdcType)
+    },[])
+
+    const onClickCBDC = (value) =>{
+        //setClickBtn(value)
+        if(value === "extinct"){
             setModalshow(true)
-        } else {
-            setModalshow(false)
-        }        
+        }
+        
     }
+    const onClickQR = () => {
+        history.push('/personal/payment/read-qr');
+    }
+
+    const onClickPayment = async() => {
+        const receiverSnapshot = await dbService
+                .collection(`UserInfo`)
+                .where('name','==',affiliateInfo.name)
+                .get()
+        const receiverData = receiverSnapshot.docs[0].data()
+        
+        
+        await dbService
+            .collection(`TxInfo`)
+            .add({
+                sender_account : userInfo.account,
+                sender_wallet : userInfo.wallet,
+                sender_name : userInfo.name,
+                receiver_name : receiverData.name,
+                receiver_wallet : receiverData.wallet,
+                receiver_account : receiverData.account,
+                amount : Number(amount),
+                transaction_type : "결제",
+                transaction_date : GetDatetime(),
+                cbdc_type : clickBtn
+            })
+        var user_cbdc_balance = {}
+        user_cbdc_balance[clickBtn + "_cbdc_balance"] = firebaseInstance.firestore.FieldValue.increment(-amount)
+        await dbService
+            .doc(`UserInfo/${userInfo.uid}`)
+            .update(user_cbdc_balance)
+        
+        var affiliate_cbdc_balance ={}
+        affiliate_cbdc_balance["common_cbdc_balance"] = firebaseInstance.firestore.FieldValue.increment(amount)
+        await dbService
+            .doc(`UserInfo/${affiliateInfo.uid}`)
+            .update(affiliate_cbdc_balance)
+        
+        history.push('/personal/CBDC')
+    }
+    const onChangeAmount = (e) =>{
+        setAmount(e.target.value)
+    }
+
+
     return (
         <div>
             <Header>
@@ -30,21 +84,23 @@ const PaymentPage = () => {
             </Header>
             <Body>
                 <Title style={{marginTop: '2vh'}}>가맹점 QR읽기</Title>
-                <Box style={{marginBottom: '4vh'}}>
-                    <img src="/images/capture.png" alt="qr" />
+                <Box style={{marginBottom: '4vh'}} >
+                    <img src="/images/capture.png" alt="qr" onClick={onClickQR} />
                 </Box>
                 <Title style={{marginTop: '2vh'}}>사용가능 CBDC <span style={{color: '#00b2a7'}}>(한가지 선택)</span></Title>
-                <Box style={{justifyContent: 'space-between'}} onClick={() => setModalshow(true)}>
-                    <Content>일반자금</Content>
-                    <Content> <span style={{fontSize: '4.5vw'}}>200,000</span> &nbsp;&nbsp; D-KRW</Content>
+                
+                {/* backgroundColor : (clickBtn === "reduce"? '#ccfdfa' : "#fffff") */}
+                <Box style={{justifyContent: 'space-between', backgroundColor : (clickBtn === "common"? '#ccfdfa' : "#fffff") }}  onClick={()=>onClickCBDC("common")}>
+                    <Content>일반자금 </Content>
+                    <Content> <span style={{fontSize: '4.5vw'}}>{userInfo.extinct_cbdc_balance&&userInfo.common_cbdc_balance.toLocaleString()}</span> &nbsp;&nbsp; D-KRW</Content>
                 </Box>
-                <Box style={{justifyContent: 'space-between', marginTop: '2vh', backgroundColor: '#ccfdfa'}} onClick={() => setModalshow(true)}>
+                <Box style={{justifyContent: 'space-between', marginTop: '2vh', backgroundColor : (clickBtn === "extinct"? '#ccfdfa' : "#fffff") }}  onClick={()=>onClickCBDC("extinct")}>
                     <Content>재난지원금 <span> <Badge>소멸형</Badge> </span></Content>
-                    <Content> <span style={{fontSize: '4.5vw'}}>300,000</span> &nbsp;&nbsp; D-KRW</Content>
+                    <Content> <span style={{fontSize: '4.5vw'}}>{userInfo.extinct_cbdc_balance&&userInfo.extinct_cbdc_balance.toLocaleString()}</span> &nbsp;&nbsp; D-KRW</Content>
                 </Box>
-                <Box style={{justifyContent: 'space-between', marginTop: '2vh'}} onClick={() => setModalshow(true)}>
+                <Box style={{justifyContent: 'space-between', marginTop: '2vh', backgroundColor : (clickBtn === "reduce"? '#ccfdfa' : "#fffff")}} onClick={()=>onClickCBDC("reduce")}>
                     <Content>재난지원금 <span> <Badge>감소형</Badge> </span></Content>
-                    <Content> <span style={{fontSize: '4.5vw'}}>500,000</span> &nbsp;&nbsp; D-KRW</Content>
+                    <Content> <span style={{fontSize: '4.5vw'}}>{userInfo.reduce_cbdc_balance&&userInfo.reduce_cbdc_balance.toLocaleString()}</span> &nbsp;&nbsp; D-KRW</Content>
                 </Box>
 
                 <Title style={{marginTop: '4vh'}}>내 QR/바코드로 결제하기 <span style={{color: '#00b2a7'}}>(한가지 선택)</span></Title>
@@ -54,8 +110,8 @@ const PaymentPage = () => {
                             <div style={{fontSize: '2.67vw'}}>내 QR로 결제하기</div>
                         </CardHeader>
                         <CardBody>
-                            <div>
-                                <img src="/images/qr.png" alt="qr"  />
+                            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                                <img src="/images/qr.png" alt="qr" style={{width: '50%'}} />
                             </div>
                         </CardBody>
                     </Card>
@@ -64,8 +120,8 @@ const PaymentPage = () => {
                             <div style={{fontSize: '2.67vw'}}>내 바코드로 결제하기</div>
                         </CardHeader>
                         <CardBody>
-                            <div>
-                                <img src="/images/barcode.png" alt="qr" />
+                            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                                <img src="/images/barcode.png" alt="qr" style={{width: '80%'}} />
                             </div>
                         </CardBody>
                     </Card>    
@@ -80,12 +136,12 @@ const PaymentPage = () => {
                 <Amount>
                     <div style={{fontSize: '3.8vw'}}>금액입력</div>
                     <div style={{display: 'flex', alignItems: 'center'}}>
-                        <PriceInput defaultValue="200,000" />
+                        <PriceInput defaultValue="0" onChange={onChangeAmount} />
                         <div style={{fontSize: '3.8vw', marginLeft: 10}}>D-KRW</div>
                     </div>
                 </Amount>
             </div>
-            <ExRunButton>
+            <ExRunButton onClick={onClickPayment}>
                 결제하기
             </ExRunButton>
             {modalshow && <Modal>

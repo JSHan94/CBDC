@@ -4,7 +4,7 @@ import { faChevronLeft, faHome, faBars } from '@fortawesome/free-solid-svg-icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { history } from '../../_helpers';
 
-const AffiliatePage = () => {
+const AffiliatePage = ({affiliateInfo}) => {
     return (
         <div>
             <Header>
@@ -22,11 +22,11 @@ const AffiliatePage = () => {
             <Body>
                 <Button style={{marginTop: 40}} href="affiliate/save">
                     <div>기업자유예금</div>
-                    <div><span style={{color: "#212121"}}>1,000,000</span> 원</div>
+                    <div><span style={{color: "#212121"}}>{affiliateInfo.fiat_balance&&affiliateInfo.fiat_balance.toLocaleString()}</span> 원</div>
                 </Button>
                 <Button style={{marginTop: 15}} href="affiliate/CBDC">
                     <div>CBDC</div>
-                    <div><span style={{color: "#212121"}}>800,000</span> D-KRW</div>
+                    <div><span style={{color: "#212121"}}>{affiliateInfo.common_cbdc_balance&&affiliateInfo.common_cbdc_balance.toLocaleString()}</span> D-KRW</div>
                 </Button>
             </Body>
         </div>
