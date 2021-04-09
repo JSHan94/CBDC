@@ -33,7 +33,6 @@ function App() {
     const [affiliateInfo,setAfilliateInfo] = useState([])
 
     const affiliateUid = "73lQmKhayChBID8CO7RL"
-
     const userUid = "kvIj9IcrYkp0hlJK2NrZ"
 
 
@@ -52,6 +51,7 @@ function App() {
                 }
                 setUserInfo(data)
             }catch(error){
+                console.log(error)
                 console.log("Getting userInfo Error in App.js")
             }
 
@@ -67,6 +67,7 @@ function App() {
                 }
                 setAfilliateInfo(data)
             }catch(error){
+                console.log(error)
                 console.log("Getting affiliateInfo Error in App.js")
             }
         }

@@ -6,6 +6,9 @@ import { history } from '../../_helpers';
 import { dbService, firebaseInstance } from "../../fbase";
 import GetDatetime from "../../_helpers/GetDatetime";
 import {useLocation} from "react-router"
+import * as Constants from './Constants'
+
+const tokenName = Constants.TOKEN_NAME;
 
 const PaymentPage = ({userInfo,affiliateInfo}) => {
     const location = useLocation()
@@ -13,6 +16,9 @@ const PaymentPage = ({userInfo,affiliateInfo}) => {
     const [amount, setAmount] = useState(0)
     const clickBtn = location.state.cbdcType
     
+    console.log(tokenName)
+
+
     useEffect(()=>{
         console.log(location.state.cbdcType)
     },[])
@@ -62,7 +68,29 @@ const PaymentPage = ({userInfo,affiliateInfo}) => {
             .doc(`UserInfo/${affiliateInfo.uid}`)
             .update(affiliate_cbdc_balance)
         
+        const req = await fetch('http://141.223.82.142:3030/v1/transfer',{
+            //mode : 'cors',   
+            headers: {
+                'Content-Type':'application/json',
+                'Accept':'application/json',
+            },
+           method : 'POST',
+           body :JSON.stringify({sender : userInfo.wallet, receiver:affiliateInfo.wallet, amount:amount, token:tokenName})
+          
+        })
+        console.log(req)
+        
         history.push('/personal/CBDC')
+        
+        
+        // var child; 
+        // child = exec(cmd, function (error, stdout, stderr) {
+        //     console.log(stdout);
+        //     console.log(stderr);
+        //     if (error !== null) {
+        //         console.log('exec error: ' + error);
+        //     }
+        // });
     }
     const onChangeAmount = (e) =>{
         setAmount(e.target.value)

@@ -15,7 +15,7 @@ const TransferPage = ({userInfo}) => {
     const [senderWallet,setSenderWallet] = useState(userInfo.wallet)
 
     const [receiverAccount, setReceiverAccount] = useState("")
-    const [receiverWallet,setReceiverWallet] = useState("222-2222-2222")
+    const [receiverWallet,setReceiverWallet] = useState("")
     const [receiverName, setReceiverName] = useState("")
 
     const [senderQuerySnapshot,setSenderQuerySnapshot] = useState([])

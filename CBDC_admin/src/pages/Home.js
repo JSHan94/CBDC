@@ -4,19 +4,6 @@ import Base from '../components/Layout/Base';
 
 import ContentWrapper from '../components/Layout/ContentWrapper'
 
-// const tableData = [
-//     {
-//         issue_day: '2021-01-05',
-//         issued_amount: 100000,
-//         issue_purpose: '재난지원',
-//         validity: '2021-12-30',
-//         account_setting: '소멸형',
-//         set_rate: '20',
-//         restriction_use: '소상공인한정',
-//         processing_status: '발행완료',
-//         allotment_bank: '하나은행'
-//     }
-// ];
 
 const Home = ({history}) => {
     //console.log(history)
