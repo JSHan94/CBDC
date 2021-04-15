@@ -8,7 +8,7 @@ const HomePage = () => {
       <HomeLayout>
         <HomeLogo src="images/logo.png" />
         <HomeVersion>
-          CBDC 기술검증 DEMO Ver.
+          CBDC 기술검증 DEMO ver. 1.0 
         </HomeVersion>
         <ButtonGroup>
           <HomeButton onClick={() => history.push("/personal")}>개인</HomeButton>
@@ -17,10 +17,8 @@ const HomePage = () => {
         </ButtonGroup>
         <HomeFooterLayout>
           <HomeFooterText>
-            버전체크 0%
           </HomeFooterText>
           <HomeFooterText>
-            프로그램 로딩 중......
           </HomeFooterText>
           <HomeLodingBar>
             <HomeLodingBarProgress></HomeLodingBarProgress>

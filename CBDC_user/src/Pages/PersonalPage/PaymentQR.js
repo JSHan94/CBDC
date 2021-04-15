@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { history } from '../../_helpers';
 
 const PaymentQR = () => {
-    console.log("read-qr called!")
     try{
         return (
             <div>

@@ -24,7 +24,7 @@ const ASaveAccountPage = ({affiliateInfo}) => {
                     <div style={{display: 'flex', alignItems: 'center' }}>
                         <CardChildName>기업자유예금</CardChildName>
                         <div style={{marginLeft: 'auto', marginRight: 30, fontWeight: 600, fontSize: '6vw'}}>
-                            {affiliateInfo.fiat_balance&&affiliateInfo.fiat_balance.toLocaleString()} <span style={{fontSize: '4vw'}}>D-KRW</span>
+                            {affiliateInfo.fiat_balance&&affiliateInfo.fiat_balance.toLocaleString()} <span style={{fontSize: '4vw'}}>원</span>
                         </div>
                     </div>
                     <div style={{display: 'flex', alignItems: 'center', marginTop: 10}}>
@@ -37,7 +37,7 @@ const ASaveAccountPage = ({affiliateInfo}) => {
                                 marginLeft: 5, 
                                 marginRight: 20
                             }}
-                            //onClick={() => history.push('/affiliate/deal/save')}
+                            onClick={() => history.push('/affiliate/deal/save')}
                         >
                             거래내역
                         </Button2>

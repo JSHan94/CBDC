@@ -52,7 +52,15 @@ const CBDCDealDisasterExtinctPage = ({userInfo}) => {
             <Body>
                 <CardChild>
                     <div style={{display: 'flex', flexDirection: 'column', padding: '0 4vw'}}>
-                        <div style={{marginTop: '2vw', color: '#000', fontSize:'3.73vw'}}>CBDC-재난지원(소멸형)</div>
+                        <div style={{marginTop: '2vw', color: '#000', fontSize:'3.73vw'}}>
+                        <img 
+                            src={"/images/hana_logo.png"} 
+                            alt="logo"
+                            style={{
+                                height:20,
+                                marginRight:10
+                            }}
+                        />CBDC-재난지원(소멸형)</div>
                         <div style={{marginTop: '6vw', display: 'flex', justifyContent: 'flex-end', position: 'relative'}}>
                             <div style={{fontSize: '6vw'}}>{userInfo.extinct_cbdc_balance&&userInfo.extinct_cbdc_balance.toLocaleString()} <span style={{fontSize: '4vw'}}>D-KRW</span></div>
                         </div>

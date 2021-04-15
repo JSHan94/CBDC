@@ -21,7 +21,10 @@ const AffiliatePage = ({affiliateInfo}) => {
             </Header>
             <Body>
                 <Button style={{marginTop: 40}} href="affiliate/save">
-                    <div>기업자유예금</div>
+                    
+                    <div>
+                        기업자유예금
+                    </div>
                     <div><span style={{color: "#212121"}}>{affiliateInfo.fiat_balance&&affiliateInfo.fiat_balance.toLocaleString()}</span> 원</div>
                 </Button>
                 <Button style={{marginTop: 15}} href="affiliate/CBDC">
@@ -69,4 +72,5 @@ const Button = styled.a`
     text-decoration: unset;
     font-weight: 600;
     font-size: 4vw;
+    box-shadow: 1px 2px 6px 1px #bfcfea;
 `

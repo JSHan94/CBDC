@@ -53,6 +53,18 @@ const ExchangePage = ({userInfo}) => {
                             transaction_date : datetime,
                             cbdc_type : "common"
                         })
+            
+            //TODO : 원화->CBDC 일 때, CBDC->원화 일 때 트랜잭션 서로 다른 트랜잭션 생성 
+            // const tokenName = Constants.TOKEN_NAME;
+            // const req = await fetch('http://141.223.82.142:3030/v1/transfer',{
+            //     headers: {
+            //         'Content-Type':'application/json',
+            //         'Accept':'application/json',
+            //     },
+            //     method : 'POST',
+            //     body :JSON.stringify({sender : userInfo.wallet, receiver:userInfo.wallet, amount:exchangeMoney, token:tokenName})
+            // })
+
             history.push('/personal/CBDC')
         }
     }

@@ -309,7 +309,7 @@ const CardHeader = styled.div`
     align-items: center;
     justify-content: space-between;
     width: 90vw;
-    height: 11.88vh;
+    height: 11vh;
     background-color: #00b2a7;
     color: #000;
     font-weight: 600;
@@ -362,6 +362,7 @@ const Button1 = styled.button`
     font-size: 3.6vw;
     outline: none;
     padding: 0.5vw 1.5vh;
+    cursor : pointer;
 `
 const Button2 = styled.button`
     color: #adacac;
@@ -372,6 +373,7 @@ const Button2 = styled.button`
     outline: none;
     font-size: 3.6vw;
     padding: 0.5vw 1.5vh;
+    cursor : pointer;
 `
 const Modal = styled.div`
     position: fixed;

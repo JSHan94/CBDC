@@ -72,4 +72,5 @@ const Button = styled.a`
     text-decoration: unset;
     font-weight: 600;
     font-size: 4vw;
+    box-shadow: 1px 2px 6px 1px #bfcfea;
 `

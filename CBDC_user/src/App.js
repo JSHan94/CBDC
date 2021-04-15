@@ -91,7 +91,7 @@ function App() {
                             <Route path="/personal/cbdc" render ={()=><CBDCPage userInfo={userInfo}/>} />
                             <Route path="/personal/exchange" render ={()=><ExchangePage userInfo={userInfo}/>} />
                             <Route path="/personal/transfer" render ={()=><TransferPage userInfo={userInfo}/>}/>
-                            <Route path="/personal/payment/read-qr" component={PaymentQR} />
+                            <Route path="/personal/payment/read-qr" render ={()=><PaymentQR userInfo={userInfo}/>} />
                             <Route path="/personal/payment" render ={()=><PaymentPage userInfo={userInfo} affiliateInfo={affiliateInfo}/>} />
                             <Route path="/personal" render ={()=><PersonalPage userInfo={userInfo}/>} />
                             
@@ -102,7 +102,7 @@ function App() {
                             <Route path="/affiliate/exchange" render ={()=><AExchangePage affiliateInfo={affiliateInfo}/>} />
                             <Route path="/affiliate/transfer" render ={()=><ATransferPage affiliateInfo={affiliateInfo}/>} />
                             <Route path="/affiliate" render ={()=><AffiliatePage affiliateInfo={affiliateInfo}/>} />
-
+                            
                             <Redirect from="*" to="/" />
                         </Switch>
                     </Router>

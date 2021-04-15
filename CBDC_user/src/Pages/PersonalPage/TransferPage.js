@@ -1,14 +1,15 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import { faChevronLeft, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { history } from '../../_helpers';
 import GetDatetime from "../../_helpers/GetDatetime";
 import { dbService, firebaseInstance } from "../../fbase";
+import * as Constants from './Constants'
 
 const TransferPage = ({userInfo}) => {
-    const [inaddress, setInaddress] = useState('')
-
+    const [inaddress, setInaddress] = useState(false)
+    
     const [CBDCAmount, setCBDCAmount] = useState(0)
 
     const [senderAccount, setSenderAccount] = useState(userInfo.account)
@@ -23,6 +24,10 @@ const TransferPage = ({userInfo}) => {
     
     const [bankSrc,setBankSrc] = useState("")
 
+
+    useEffect(()=>{
+
+    },[])
     const onClickSender= async(e) => {
         // sender 세팅
         const senderSnapshot = await dbService
@@ -38,6 +43,7 @@ const TransferPage = ({userInfo}) => {
 
     const onClickReceiverAccount=(e)=>{
         setReceiverAccount(e.target.value)
+        setInaddress(false)
     }
 
     const onClickReceiverBank=async(e)=>{
@@ -56,10 +62,9 @@ const TransferPage = ({userInfo}) => {
                 
                 setReceiverQuerySnapshot(receiverSnapshot)
                 setReceiverWallet(receiverData.wallet)
-                setInaddress("checked")
+                setInaddress(true)
             }else{
-                setInaddress("")
-                //setBankSrc("")
+                setInaddress(false)
             }
         }
     }
@@ -108,7 +113,17 @@ const TransferPage = ({userInfo}) => {
                         transaction_date : datetime,
                         cbdc_type : "common"
                     })
-                    
+                
+
+                const tokenName = Constants.TOKEN_NAME;
+                const req = await fetch('http://141.223.82.142:3030/v1/transfer',{
+                    headers: {
+                        'Content-Type':'application/json',
+                        'Accept':'application/json',
+                    },
+                    method : 'POST',
+                    body :JSON.stringify({sender : senderWallet, receiver:receiverWallet, amount:CBDCAmount, token:tokenName})
+                }) 
                 history.push('/personal/CBDC')
                 window.location.reload();
 
@@ -208,7 +223,7 @@ const TransferPage = ({userInfo}) => {
                     </select>
                 </div>
                 {
-                (inaddress !== '') && <>
+                (inaddress === true) && <>
                 <div style={{marginTop: '8vh', color: '#00b2a7', fontSize: '3.73vw', width: '90vw'}}>아래와 같이 확인됩니다.</div>
                 <div style={{marginTop: '2vh', borderBottom: '1px solid #000', display: 'flex', alignItems: 'center', width: '90vw', height: 40}}>
                     <div style={{color: '#000', fontSize: '3.5vw'}}>{receiverName}</div>
