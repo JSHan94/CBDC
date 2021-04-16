@@ -1,17 +1,174 @@
-import React, {useState, useEffect} from 'react'
+//CentralBank Tab
+
+import React, {useState, useEffect,Fragment } from 'react'
 import { dbService } from '../fbase';
 import Base from '../components/Layout/Base';
+import styled from "styled-components"
 
 import ContentWrapper from '../components/Layout/ContentWrapper'
+import {Tabs} from 'react-simple-tabs-component'
+import 'react-simple-tabs-component/dist/index.css'
 
 
-const Home = ({history}) => {
-    //console.log(history)
+const TabOne = () =>{
+    const [edit, setEdit] = useState(false);
+    const [state, setState] = useState({});
+    const [queryData, setQueryData] = useState({});
+
+    const handleChange = (event) => {
+        if(event.target.name === "issued_amount"){
+            //var val = Number(event.target.value.replace(/\D/g, ''))
+            setState({
+                ...state,
+                [event.target.name]: Number(event.target.value)//val.toLocaleString()
+            });            
+        }else{
+            setState({
+                ...state,
+                [event.target.name]: event.target.value
+            });
+        }
+    }
+    //발행 값 state에 저장완료
+    const onClickIssue = async() => {
+        //var val = Number(state['issued_amount'].replace(/\D/g, ''))
+        setState({
+            ...state,
+            ['processing_status'] : '미배정'
+        })
+        var randomNum = (Math.floor(Math.random()*(10000-1)) + 1)+'';
+        while(randomNum.length < 5){
+            randomNum = '0'+randomNum
+        }
+        await dbService
+            .collection(`IssueInfo`)
+            .add({
+                ...state,
+                ["issue_number"]: "DC2021-"+randomNum
+
+            })
+        window.location.reload();
+    }
+    return (
+        <Fragment>
+            <div className="topbar">
+                <nav className="navbar-custom">
+                    <ul className="list-inline menu-left mb-0">
+                        <li className="list-inline-item">
+                            <button type="button" className="button-menu-mobile open-left waves-effect">
+                                <i className="ion-navicon"></i>
+                            </button>
+                        </li>
+                        <li className="hide-phone list-inline-item app-search">
+                            <h3 className="page-title">CBDC 발행</h3>
+                        </li>
+                    </ul>
+
+                    <div className="clearfix"></div>
+                </nav>
+            </div>
+            <div className="modal-body">
+                
+                <div className="row mr-3" style={{marginBottom:20}}>
+                    <div className="col-3 d-flex align-items-center" >
+                        <label style={{whiteSpace: 'nowrap'}}>발행일자</label>
+                        <div className="mx-2">
+                            <input className="form-control" 
+                                type="date" 
+                                name="issue_day"
+                                value={state.issue_day} 
+                                onChange={handleChange}
+                                style={{width:200}}
+                                />
+                        </div>
+                    </div>
+                    <div className="col-3 d-flex align-items-center">
+                        <label style={{whiteSpace: 'nowrap'}}>유효기간</label>
+                        <div className="mx-2">
+                            <input className="form-control" 
+                                type="date" 
+                                id="example-date-input"
+                                name="validity"
+                                value={state.validity} 
+                                onChange={handleChange}
+                                style={{width:200}} />
+                        </div>
+                    </div>
+                </div>
+                <div className="row mr-3"  style={{marginBottom:20}}>
+                    <div className="col-3 d-flex align-items-center">
+                        <label className="">발행금액</label>
+                        <div className="mx-2">
+                            <input type="text" 
+                                style={{width: 200}} 
+                                className="form-control" 
+                                name="issued_amount"
+                                value={state.issued_amount} 
+                                onChange={handleChange} />
+                        </div>
+                        <label className="">D-KRW</label>
+                    </div>
+                </div>
+                <div className="row mr-3" style={{marginBottom:20}}>
+                    <div className="col-3 d-flex align-items-center" >
+                        <label className="">발행목적</label>
+                        <div className="mx-2">
+                            <select className="form-control" name="issue_purpose" value={state.issue_purpose} onChange={handleChange}>
+                                <option>발행목적 선택</option>
+                                <option value="일반자금">일반자금</option>
+                                <option value="재난지원">재난지원</option>  
+                            </select>
+                        </div>
+                    </div>
+                    <div className="col-3 d-flex align-items-center">
+                        <label className="">계정설정</label>
+                        <div className="mx-2">
+                            <select className="form-control"  name="account_setting" value={state.account_setting} onChange={handleChange}>
+                                <option>계정 선택</option>
+                                <option value="일반형">일반형</option>
+                                <option value="소멸형">소멸형</option>
+                                <option value="감소형">감소형</option> 
+                            </select>
+                        </div>
+                    </div>
+                    <div className="col-3 d-flex align-items-center">
+                        <label className="">월 감소비율</label>
+                        <div className="mx-2">
+                            <select className="form-control"  name="set_rate" value={state.set_rate} onChange={handleChange}>
+                                <option>감소율 선택</option>
+                                <option value="0">0.0 %</option>
+                                <option value="20">20.0 %</option>
+                                <option value="40">40.0 %</option>
+                                <option value="60">60.0 %</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div className="modal-footer border-0">
+                <button className="btn btn-outline-info waves-effect mr-2" 
+                        data-dismiss="modal" aria-hidden="true"
+                        onClick={onClickIssue} >발행</button>
+                <button className="btn btn-outline-info waves-effect mr-2" 
+                        data-dismiss="modal" aria-hidden="true">취소</button>
+            </div>
+        </Fragment>
+      )
+}
+
+const TabTwo = () =>{
+
     const [data, setData] = useState([]);
     const [state, setState] = useState([]);
-    const [selected, setSelected] = useState(0);
+    const [assignBank, setAssignBank] = useState("");
     const [edit, setEdit] = useState(false);
-    
+
+    const [modalshow, setModalshow] = useState(false)
+    const [modalValue,setModalValue] = useState({})
+    const tableColumn = ["발행일", "발행번호","발행금액","자금목적","계정설정","유효기간","배정은행","배정번호","처리상태"]
+
     //DB에서 data값 가져오기
     useEffect(() => {
         getIssueData();
@@ -31,29 +188,6 @@ const Home = ({history}) => {
             console.log(error)
         }
     }
-    const handleChange = (event) => {
-        console.log(event.target.name, event.target.value)
-        setState({
-            ...state,
-            [event.target.name]: event.target.value
-        });
-    }
-
-    //발행 값 state에 저장완료
-    const onClickIssue = async() => {
-        var randomNum = (Math.floor(Math.random()*(10000-1)) + 1)+'';
-        while(randomNum.length < 5){
-            randomNum = '0'+randomNum
-        }
-        await dbService
-            .collection(`IssueInfo`)
-            .add({
-                ...state,
-                ["issue_number"]: "DC2021-"+randomNum
-
-            })
-        window.location.reload();
-    }
 
     const onClickIssuePopup = () => {
         setEdit(false);
@@ -64,13 +198,11 @@ const Home = ({history}) => {
     }
 
     //수정 값 state에 저장 완료
-    const onClickEdit = async() => {
-        
-        let _temp = data.filter((el, i) => i == selected);
+    const onClickEdit = async(e) => {
         try{
             const deleteSnapshot = await dbService
             .collection(`IssueInfo`)
-            .where('issue_number','==',_temp[0].issue_number)
+            .where('issue_number','==',e.target.value)
             .get()
             console.log(state)
             await dbService.collection(`IssueInfo`).doc(deleteSnapshot.docs[0].id).update(
@@ -79,27 +211,18 @@ const Home = ({history}) => {
         }catch(error){
             console.log(error)
         }
-        // let _temp = data.map((item, i) => {
-        //     if(i == selected) return state;
-        //     else return item;
-        // });
-        // setData(_temp);
     }
 
-    const onChangeItem = (event) => {
-        const _temp = data[event.target.value];
-        setState(_temp);
-        setSelected(event.target.value);
+    const onChangeAssignBank = (e)=>{
+        setAssignBank(e.target.value)
     }
 
-    const onDelete = async() => {
-        let _temp = data.filter((el, i) => i == selected);
+    const onClickDelete = async(e) => {
         try{
-
             const deleteSnapshot = await dbService
-            .collection(`IssueInfo`)
-            .where('issue_number','==',_temp[0].issue_number)
-            .get()
+                .collection(`IssueInfo`)
+                .where('issue_number','==',e.target.value)
+                .get()
 
             await dbService.collection(`IssueInfo`).doc(deleteSnapshot.docs[0].id).delete()
             window.location.reload();
@@ -108,26 +231,40 @@ const Home = ({history}) => {
         }
     }
 
-    const onClickAssign = async() => {
-        let _temp = data.filter((el, i) => i == selected);
+    const onClickAssign = async(e) => {
         try{
-            const deleteSnapshot = await dbService
-            .collection(`IssueInfo`)
-            .where('issue_number','==',_temp[0].issue_number)
-            .get()
-            console.log(state)
-            await dbService.collection(`IssueInfo`).doc(deleteSnapshot.docs[0].id).update(
-                {processing_status : "배정완료"})
-            window.location.reload();
+            if (!assignBank){
+                return
+            }
+            const assignSnapshot = await dbService
+                .collection(`IssueInfo`)
+                .where('issue_number','==',e.target.value)
+                .get()
+            var randomNum = (Math.floor(Math.random()*(10000-1)) + 1)+'';
+            while(randomNum.length < 5){
+                randomNum = '0'+randomNum
+            }
+            randomNum = "PT2021-"+randomNum
+            await dbService.collection(`IssueInfo`).doc(assignSnapshot.docs[0].id).update({
+                processing_status : "배정완료",
+                assign_number : randomNum,
+                assign_bank : assignBank
+            })
+            console.log(assignSnapshot.docs[0].data().issued_amount)
+            setModalshow(true)
+            setModalValue({
+                assign_number: randomNum,
+                assign_bank : assignBank,
+                issued_amount: assignSnapshot.docs[0].data().issued_amount,
+            })
+            //window.location.reload();
         }catch(error){
             console.log(error)
         }
-        //history.push('/distribution');
     }
 
-    return (
-        <Base bankName={"한국은행"} history={history}>
-        <ContentWrapper>
+    return(
+        <Fragment>
             <div className="topbar">
                 <nav className="navbar-custom">
                     <ul className="list-inline menu-left mb-0">
@@ -137,7 +274,7 @@ const Home = ({history}) => {
                             </button>
                         </li>
                         <li className="hide-phone list-inline-item app-search">
-                            <h3 className="page-title">CBDC 발행 및 배정 관리</h3>
+                            <h3 className="page-title">CBDC 배정 및 조회</h3>
                         </li>
                     </ul>
 
@@ -148,38 +285,52 @@ const Home = ({history}) => {
                 <div className="card-block">
                     <div className="d-flex justify-content-between">
                         <div className="">
-                            <div className="form-check form-check-inline">
+                            {/* <div className="form-check form-check-inline">
                                 <input className="" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" />
                                 <label className="mx-2" htmlFor="inlineRadio1">요청일자</label>
                             </div>
                             <div className="form-check form-check-inline">
                                 <input className="" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" />
                                 <label className="mx-2" htmlFor="inlineRadio2">발행일자</label>
-                            </div>
-                            <div className="form-group form-check-inline">
-                                <div className="form-check-inline">
-                                    <input className="form-control" type="date" defaultValue="2011-08-19" id="example-date-input"></input>
+                            </div> */}
+                            <div className="d-flex">
+                                <div className="d-flex align-items-center mr-3">
+                                    <label className="">발행일자</label>
+                                    <div className="mx-2">
+                                        <div className="form-group form-check-inline">
+                                            <div className="form-check-inline">
+                                                <input className="form-control" type="date" id="example-date-input"></input>
+                                            </div>
+                                            <span className="mx-3">-</span>
+                                            <div className="form-check-inline">
+                                                <input className="form-control" type="date" id="example-date-input"></input>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                 </div>
-                                <span className="mx-3">-</span>
-                                <div className="form-check-inline">
-                                    <input className="form-control" type="date" defaultValue="2011-08-19" id="example-date-input"></input>
-                                </div>
                             </div>
+                            
 
                             <div className="d-flex">
                                 <div className="d-flex align-items-center mr-3">
                                     <label className="">배정은행</label>
                                     <div className="mx-2">
                                         <select className="form-control">
+                                            
                                             <option>하나은행</option>
+                                            <option>포스텍은행</option>
+                                            <option>카이스트은행</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div className="d-flex align-items-center mr-3">
-                                    <label className="">발행목적</label>
+                                    <label className="">자금목적</label>
                                     <div className="mx-2">
                                         <select className="form-control">
                                             <option>전체</option>
+                                            <option>일반자금</option>
+                                            <option>재난지원</option>
                                         </select>
                                     </div>
                                 </div>
@@ -188,6 +339,8 @@ const Home = ({history}) => {
                                     <div className="mx-2">
                                         <select className="form-control">
                                             <option>전체</option>
+                                            <option>미배정</option>
+                                            <option>배정완료</option>
                                         </select>
                                     </div>
                                 </div>
@@ -195,13 +348,13 @@ const Home = ({history}) => {
                         </div>
                         
                         <div className="d-flex flex-column justify-content-between">
-                            <div>
+                            {/* <div>
                                 <button type="button" className="btn btn-outline-info waves-effect waves-light" 
                                         data-toggle="modal" 
                                         data-target=".bs-example-modal-lg" 
                                         onClick={onClickIssuePopup}
                                 >발행</button>
-                            </div>
+                            </div> */}
                             <div>
                                 <button type="button" className="btn btn-outline-info waves-effect waves-light">조회</button>
                             </div>
@@ -211,48 +364,73 @@ const Home = ({history}) => {
             </div>
 
             <div className="d-flex justify-content-between mb-2">
-                <div>총{data.length}건</div>
+                <div>총 {data.length}건</div>
                 <div>(단위: D-KRW)</div>
             </div>
-            <table id="datatable" className="table table-bordered">
+            <table id="datatable" className="table table-bordered" >
                 <thead>
                     <tr>
-                        <th>선택</th>
-                        <th>발행일</th>
-                        <th>발행금액</th>
-                        <th>발행목적</th>
-                        <th>유효기간</th>
-                        <th>계정설정</th>
-                        <th>설정비율</th>
-                        <th>사용처제한</th>
-                        <th>처리상태</th>
-                        <th>배정은행</th>
-                        <th>발행번호</th>
+                        <th></th>
+                        {
+                            tableColumn.map((e,i)=>(
+                                <th style={{textAlign:'center'}} key={i}>{e}</th>
+                            ))
+                        }
+                        <th></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody style={{textAlign:'center'}} >
                     {
                         data.map((el, i) => (
-                            <tr key={i}>
-                                <td>
-                                    <input type="radio" name="checkbox" defaultChecked={i==0 ? true : false} value={i} onChange={onChangeItem} />
-                                </td>
+                            <tr key={i} >
+                                <td>{i+1}</td>
                                 <td> {el.issue_day} </td>
-                                <td> ${el.issued_amount} </td>
-                                <td> {el.issue_purpose} </td>
-                                <td> {el.validity} </td>
-                                <td> {el.account_setting} </td>
-                                <td> {el.set_rate} </td>
-                                <td> {el.restriction_use} </td>
-                                <td> {el.processing_status} </td>
-                                <td> {el.allotment_bank} </td>
                                 <td> {el.issue_number} </td>
+                                <td> {el.issued_amount.toLocaleString()} </td>
+                                <td> {el.issue_purpose} </td>
+                                <td> {el.account_setting} 
+                                     {
+                                        el.set_rate !== '0' && el.set_rate !== undefined? <> ({el.set_rate}%)</> : <></>
+                                     }
+                                      </td>
+                                <td> {el.validity} </td> 
+                                <td style={{width:150}}>
+                                    {
+                                        el.assign_number ? (
+                                            <>
+                                                {el.assign_bank}
+                                            </>
+                                        ):
+                                        (
+                                            <>
+                                                <select className="form-control" onChange={onChangeAssignBank}>
+                                                    <option></option>
+                                                    <option value="하나은행">하나은행</option>
+                                                    <option value="포스텍은행">포스텍은행</option>
+                                                </select>
+                                            </>
+                                        )
+                                        
+                                    }
+                                    
+                                </td>
+                                <td> {el.assign_number} </td>
+                                <td> {el.processing_status} </td>
+                                <td> 
+                                    <div className="d-flex justify-content-center" >
+                                        <button style={{width:'100%'}} //disabled={el.assign_number}
+                                            type="button" className="btn btn-outline-info mr-2" value={el.issue_number} onClick={onClickAssign}>배정</button>
+                                        <button style={{width:'100%'}} //disabled={el.assign_number}
+                                            type="button" className="btn btn-outline-info waves-effect mr-2" value={el.issue_number} onClick={onClickDelete}>삭제</button>
+                                    </div>
+                                </td>
+                                
                             </tr>
                         ))
                     }
                 </tbody>
             </table>
-            <div className="d-flex justify-content-end">
+            {/* <div className="d-flex justify-content-end">
                 <div>
                     <button type="button" className="btn btn-outline-info waves-effect mr-2" onClick={onClickAssign}>배정</button>
                     <button type="button" className="btn btn-outline-info waves-effect mr-2"
@@ -262,130 +440,115 @@ const Home = ({history}) => {
                     >수정</button>
                     <button type="button" className="btn btn-outline-info waves-effect" onClick={onDelete}>삭제</button>
                 </div>
-            </div>
+            </div> */}
             <div className="d-flex justify-content-end">
                 <div className="mt-3">
                     ※ 배정완료 후에는 수정, 삭제 불가능합니다.
                 </div>
             </div>
-            
-            
-            <div className="modal fade bs-example-modal-lg" tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                <div className="modal-dialog modal-lg">
-                    <div className="modal-content">
-                        <div className="modal-header border-0">
-                            <h5 className="modal-title mt-0" id="myLargeModalLabel"></h5>
-                            <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        </div>
-                        <div className="modal-body">
-                            <div className="row mr-3">
-                                <div className="col-4 d-flex align-items-center">
-                                    <label className="">배정은행</label>
-                                    <div className="mx-2">
-                                        <select className="form-control" name="allotment_bank" value={state.allotment_bank} onChange={handleChange}>
-                                            <option value="하나은행">하나은행</option>
-                                            <option value="포스텍은행">포스텍은행</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className="col-4 d-flex align-items-center">
-                                    <label className="">발행목적</label>
-                                    <div className="mx-2">
-                                        <select className="form-control" name="issue_purpose" value={state.issue_purpose} onChange={handleChange}>
-                                            <option value="재난지원">재난지원</option>
-                                            <option value="일반자금">일반자금</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className="col-4 d-flex align-items-center">
-                                    <label style={{whiteSpace: 'nowrap'}}>발행일자</label>
-                                    <div className="mx-2">
-                                        <input className="form-control" 
-                                            type="date" 
-                                            name="issue_day"
-                                            value={state.issue_day} 
-                                            onChange={handleChange} />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="row mr-3">
-                                <div className="col-4 d-flex align-items-center">
-                                    <label className="">설정비율</label>
-                                    <div className="mx-2">
-                                        <select className="form-control" style={{width: 110}} name="set_rate" value={state.set_rate} onChange={handleChange}>
-                                            <option value="0">0.0 %</option>
-                                            <option value="20">20.0 %</option>
-                                            <option value="40">40.0 %</option>
-                                            <option value="60">60.0 %</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className="col-4 d-flex align-items-center">
-                                    <label className="">발행금액</label>
-                                    <div className="mx-2">
-                                        <input type="text" 
-                                            style={{width: 110}} 
-                                            className="form-control" 
-                                            name="issued_amount"
-                                            value={state.issued_amount} 
-                                            onChange={handleChange} />
-                                    </div>
-                                    <label className="">D-KRW</label>
-                                </div>
-                                <div className="col-3 d-flex align-items-center">
-                                    <label style={{whiteSpace: 'nowrap'}}>유효기간</label>
-                                    <div className="mx-2">
-                                        <input className="form-control" 
-                                            type="date" 
-                                            id="example-date-input"
-                                            name="validity"
-                                            value={state.validity} 
-                                            onChange={handleChange} />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="row mr-3">
-                                <div className="col-4 d-flex align-items-center">
-                                    <label className="">계정설정</label>
-                                    <div className="mx-2">
-                                        <select className="form-control" style={{width: 110}} name="account_setting" value={state.account_setting} onChange={handleChange}>
-                                            <option value="소멸형">소멸형</option>
-                                            <option value="감소형">감소형</option>
-                                            <option value="일반형">일반형</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className="col-6 d-flex align-items-center">
-                                    <label className="">사용처&nbsp;&nbsp;&nbsp;<br/>제한</label>
-                                    <div className="mx-2">
-                                        <select className="form-control" name="restriction_use" value={state.restriction_use} onChange={handleChange}>
-                                            <option value="소상공인한정">소상공인한정</option>
-                                            <option value="제한없음">제한없음</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="modal-footer border-0">
-                            {
-                                edit && <button className="btn btn-outline-info waves-effect mr-2" 
-                                            data-dismiss="modal" aria-hidden="true"
-                                            onClick={onClickEdit} >확인</button>
-                            }
-                            {
-                                !edit && <button className="btn btn-outline-info waves-effect mr-2" 
-                                            data-dismiss="modal" aria-hidden="true"
-                                            onClick={onClickIssue} >발행</button>
-                            }
-                            <button className="btn btn-outline-info waves-effect mr-2" 
-                                    data-dismiss="modal" aria-hidden="true">취소</button>
-                        </div>
+            {modalshow && <Modal>
+                <ModalBackground></ModalBackground>
+                <ModalBody>
+                    <div
+                        style={{fontSize: '20px', fontWeight: 600}}
+                    >
+                        [배정완료]
                     </div>
-                </div>
-            </div>
+                    <div style={{
+                        marginTop: 20,
+                        width: '80%',
+                        textAlign: 'center',
+                        fontSize: '20px',
+                        color: "#6c6969"
+                    }}>
+                        금액 : {modalValue.issued_amount && modalValue.issued_amount.toLocaleString()} D-KRW <br/>
+                        배정은행 : {modalValue.assign_bank} <br/>
+                        배정번호 : {modalValue.assign_number} <br/>
+                    </div>
+                    <button
+                        onClick={() => {
+                            setModalshow(false)
+                            window.location.reload();
+                        }}
+                        style={{
+                            marginTop: 40,
+                            width: '80%',
+                            height: '50px',
+                            backgroundColor: '#00b2a7',
+                            color: '#ffffff',
+                            fontSize: '20px',
+                            border: 'none',
+                            borderRadius: 3,
+                            outline: 'none'
+                        }}
+                    >
+                        닫기
+                    </button>
+                </ModalBody>
+            </Modal>}
+        </Fragment>
+    )
+}
+
+const tabs = [
+    {
+      label: 'CBDC 발행', // Tab title
+      index: 1,         // Tab index
+      Component: TabOne // Tab Component
+    },
+    {
+      label: 'CBDC 배정 및 조회',
+      index: 2,
+      Component: TabTwo
+    },
+]
+  
+const Home = ({history}) => {
+    
+    const [selectedTab, setSelectedTab] = useState(tabs[1].index)
+
+    return (
+        <Base bankName={"한국은행"} history={history}>
+        <ContentWrapper>
+            <Tabs tabs={tabs} onClick={setSelectedTab} selectedTab={selectedTab}/>
+            
         </ContentWrapper>
         </Base>
     );
 }
 
 export default Home;
+
+
+const Modal = styled.div`   
+    z-index: 1000;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    
+`
+const ModalBackground = styled.div`
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-color: #000000;
+    opacity: 0.4;
+`
+const ModalBody = styled.div`
+    position: fixed;
+    z-index: 1000;
+    
+    top: 200px;
+    right: 300px;
+    left: 300px;
+    padding: 20px 10px;
+    border-radius: 5px;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`

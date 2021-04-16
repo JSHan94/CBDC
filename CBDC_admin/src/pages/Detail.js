@@ -1,3 +1,5 @@
+//Commercial Bank Tab Two
+
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
 import Base from '../components/Layout/Base';
@@ -99,6 +101,7 @@ const Detail = ({history}) => {
                     <div className="clearfix"></div>
                 </nav>
             </div>
+
             <div className="card m-b-20">
                 <div className="card-block">
                     <div className="d-flex justify-content-between">

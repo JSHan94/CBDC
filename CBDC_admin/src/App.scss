@@ -55,7 +55,7 @@ code {
   height: 100%;
   margin: 0 auto !important;
   padding-top: $navbar-hg;
-  padding-left: $aside-wd;
+  // padding-left: $aside-wd;
 }
 
 .content-wrapper {
@@ -82,4 +82,9 @@ code {
       padding-right: 0;
   }
 
+}
+
+td {
+  text-align: center;
+  vertical-align: middle;
 }

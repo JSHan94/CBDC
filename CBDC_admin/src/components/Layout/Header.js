@@ -20,11 +20,10 @@ const Header = ({bankName,history}) =>{
     return (
         <header className="topnavbar-wrapper">
             <div className="w-100">
-                <h3 className="mx-5">CDBC</h3>
+                <h2 style={{color:'skyblue'}}>CDBC 관리 시스템</h2>
                 <Menus>
                     <div className="left-menu">
-                        <MenuItem>Central Bank Digital Currency</MenuItem>
-                        <MenuItem>CDBC메인</MenuItem>
+                        <MenuItem style={{color:'skyblue'}}>Central Bank Digital Currency</MenuItem>
                     </div>
                     <div className="right-menu">
                         <MenuItem>{bankName}</MenuItem>

@@ -78,7 +78,8 @@ const PaymentPage = ({userInfo,affiliateInfo}) => {
                 },
                 method : 'POST',
                 body :JSON.stringify({sender : userInfo.wallet, receiver:affiliateInfo.wallet, amount:amount, token:tokenName})
-            })         
+            })  
+                  
             history.push('/personal/CBDC')
         }
     }
