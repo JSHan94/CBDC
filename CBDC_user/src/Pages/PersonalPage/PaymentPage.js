@@ -19,30 +19,28 @@ const PaymentPage = ({userInfo,affiliateInfo}) => {
     }catch{
         clickBtn = "common"
     }
-    
-    useEffect(()=>{
-        
-    },[])
+
 
     const onClickCBDC = (value) =>{
-        //setClickBtn(value)
         if(value === "extinct"){
             setModalshow(true)
         }
-        
     }
     const onClickQR = () => {
         history.push('/personal/payment/read-qr');
     }
 
     const onClickPayment = async() => {
-        if(amount > 0){
+        if(amount !== "0"){
+            var val = Number(amount.replace(/\D/g, ''))
+            
             const receiverSnapshot = await dbService
                 .collection(`UserInfo`)
                 .where('name','==',affiliateInfo.name)
                 .get()
             const receiverData = receiverSnapshot.docs[0].data()
             
+
             
             await dbService
                 .collection(`TxInfo`)
@@ -53,19 +51,19 @@ const PaymentPage = ({userInfo,affiliateInfo}) => {
                     receiver_name : receiverData.name,
                     receiver_wallet : receiverData.wallet,
                     receiver_account : receiverData.account,
-                    amount : Number(amount),
+                    amount : val,
                     transaction_type : "결제",
                     transaction_date : GetDatetime(),
                     cbdc_type : clickBtn
                 })
             var user_cbdc_balance = {}
-            user_cbdc_balance[clickBtn + "_cbdc_balance"] = firebaseInstance.firestore.FieldValue.increment(-amount)
+            user_cbdc_balance[clickBtn + "_cbdc_balance"] = firebaseInstance.firestore.FieldValue.increment(-val)
             await dbService
                 .doc(`UserInfo/${userInfo.uid}`)
                 .update(user_cbdc_balance)
             
             var affiliate_cbdc_balance ={}
-            affiliate_cbdc_balance["common_cbdc_balance"] = firebaseInstance.firestore.FieldValue.increment(amount)
+            affiliate_cbdc_balance["common_cbdc_balance"] = firebaseInstance.firestore.FieldValue.increment(val)
             await dbService
                 .doc(`UserInfo/${affiliateInfo.uid}`)
                 .update(affiliate_cbdc_balance)
@@ -77,20 +75,22 @@ const PaymentPage = ({userInfo,affiliateInfo}) => {
                     'Accept':'application/json',
                 },
                 method : 'POST',
-                body :JSON.stringify({sender : userInfo.wallet, receiver:affiliateInfo.wallet, amount:amount, token:tokenName})
+                body :JSON.stringify({sender : userInfo.wallet, receiver:affiliateInfo.wallet, amount:val, token:tokenName})
             })  
                   
             history.push('/personal/CBDC')
+            window.location.reload();
         }
     }
     const onChangeAmount = (e) =>{
-        setAmount(e.target.value)
+
+        var val = Number(e.target.value.replace(/\D/g, ''))
+        setAmount(val.toLocaleString())
     }
 
 
     return (
         <div>
-            
             <Header>
                 <FontAwesomeIcon 
                     icon={faChevronLeft} 
@@ -156,7 +156,7 @@ const PaymentPage = ({userInfo,affiliateInfo}) => {
                 <Amount>
                     <div style={{fontSize: '3.8vw'}}>금액입력</div>
                     <div style={{display: 'flex', alignItems: 'center'}}>
-                        <PriceInput defaultValue="0" onChange={onChangeAmount} />
+                        <PriceInput defaultValue="0" value={amount} onChange={onChangeAmount} />
                         <div style={{fontSize: '3.8vw', marginLeft: 10}}>D-KRW</div>
                     </div>
                 </Amount>

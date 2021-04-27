@@ -29,13 +29,13 @@ const SaveAccountPage = ({userInfo}) => {
                             </div>
                         </div>
                         <div style={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginTop: 10}}>
-                            <Button1 
+                            <Button2 
                                 style={{marginLeft: 5}}
                                 // onClick={() => history.push('/personal/transfer')}
                             >
                                 이체
-                            </Button1>
-                            <Button2 
+                            </Button2>
+                            <Button1 
                                 style={{
                                     marginLeft: 5, 
                                     marginRight: 20
@@ -43,7 +43,7 @@ const SaveAccountPage = ({userInfo}) => {
                                 onClick={() => history.push('/personal/deal/save')}
                             >
                                 거래내역
-                            </Button2>
+                            </Button1>
                         </div>
                     </CardChild>
                 </CardBody>

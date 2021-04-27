@@ -11,7 +11,6 @@ const waitFor = Tag => props => <Tag {...props}/>;
 
 const Home = lazy(() => import('./pages/Home'));
 const Distribution = lazy(() => import('./pages/Distribution'));
-const Detail = lazy(() => import('./pages/Detail'));
 
 class Routes extends Component {
     render() {
@@ -31,7 +30,6 @@ class Routes extends Component {
                         <Switch>
                             <Route exact path="/home" component={waitFor(Home)} />
                             <Route exact path="/distribution" component={waitFor(Distribution)} />
-                            <Route exact path="/detail" component={waitFor(Detail)} />
                             <Redirect to="/home" />
                         </Switch>
                     </Suspense>

@@ -11,31 +11,30 @@ import 'react-simple-tabs-component/dist/index.css'
 
 
 const TabOne = () =>{
-    const [edit, setEdit] = useState(false);
     const [state, setState] = useState({});
-    const [queryData, setQueryData] = useState({});
+
 
     const handleChange = (event) => {
         if(event.target.name === "issued_amount"){
-            //var val = Number(event.target.value.replace(/\D/g, ''))
+            var val = Number(event.target.value.replace(/\D/g, ''))
             setState({
                 ...state,
-                [event.target.name]: Number(event.target.value)//val.toLocaleString()
-            });            
+                [event.target.name]: val.toLocaleString()
+            });   
+            console.log(state)         
         }else{
             setState({
                 ...state,
                 [event.target.name]: event.target.value
             });
+           
         }
+        
     }
     //발행 값 state에 저장완료
     const onClickIssue = async() => {
-        //var val = Number(state['issued_amount'].replace(/\D/g, ''))
-        setState({
-            ...state,
-            ['processing_status'] : '미배정'
-        })
+        var val = Number(state['issued_amount'].replace(/\D/g, ''))
+
         var randomNum = (Math.floor(Math.random()*(10000-1)) + 1)+'';
         while(randomNum.length < 5){
             randomNum = '0'+randomNum
@@ -44,8 +43,9 @@ const TabOne = () =>{
             .collection(`IssueInfo`)
             .add({
                 ...state,
-                ["issue_number"]: "DC2021-"+randomNum
-
+                ["issue_number"]: "DC2021-"+randomNum,
+                ['processing_status'] : '미배정',
+                ['issued_amount'] : val
             })
         window.location.reload();
     }
@@ -163,16 +163,36 @@ const TabTwo = () =>{
     const [data, setData] = useState([]);
     const [state, setState] = useState([]);
     const [assignBank, setAssignBank] = useState("");
-    const [edit, setEdit] = useState(false);
 
     const [modalshow, setModalshow] = useState(false)
     const [modalValue,setModalValue] = useState({})
     const tableColumn = ["발행일", "발행번호","발행금액","자금목적","계정설정","유효기간","배정은행","배정번호","처리상태"]
 
+    const [showData, setShowData] = useState([]) 
+
     //DB에서 data값 가져오기
     useEffect(() => {
         getIssueData();
     }, [state]);
+
+    const onChangeShowData=(e)=>{
+        setShowData({
+            ...showData,
+            [e.target.name] : e.target.value 
+        })
+    }
+    const onClickShow = () =>{
+
+        for (var key in showData){
+            if(key ==="start_date"){
+                setData(data.filter(e=>e["issue_day"] >= showData[key]))
+            }else if(key ==="end_date"){
+                setData(data.filter(e=>e["issue_day"] <= showData[key]))
+            }else{
+                setData(data.filter(e=>e[key] === showData[key]))
+            }
+        }
+    }
 
     const getIssueData = async()=>{
         try{
@@ -189,29 +209,21 @@ const TabTwo = () =>{
         }
     }
 
-    const onClickIssuePopup = () => {
-        setEdit(false);
-    }
-
-    const onClickEditPopup = () => {
-        setEdit(true);
-    }
 
     //수정 값 state에 저장 완료
-    const onClickEdit = async(e) => {
-        try{
-            const deleteSnapshot = await dbService
-            .collection(`IssueInfo`)
-            .where('issue_number','==',e.target.value)
-            .get()
-            console.log(state)
-            await dbService.collection(`IssueInfo`).doc(deleteSnapshot.docs[0].id).update(
-                {...state})
-            window.location.reload();
-        }catch(error){
-            console.log(error)
-        }
-    }
+    // const onClickEdit = async(e) => {
+    //     try{
+    //         const deleteSnapshot = await dbService
+    //         .collection(`IssueInfo`)
+    //         .where('issue_number','==',e.target.value)
+    //         .get()
+    //         await dbService.collection(`IssueInfo`).doc(deleteSnapshot.docs[0].id).update(
+    //             {...state})
+    //         window.location.reload();
+    //     }catch(error){
+    //         console.log(error)
+    //     }
+    // }
 
     const onChangeAssignBank = (e)=>{
         setAssignBank(e.target.value)
@@ -281,29 +293,21 @@ const TabTwo = () =>{
                     <div className="clearfix"></div>
                 </nav>
             </div>
-            <div className="card m-b-20">
+            <div className="card m-b-20" style={{backgroundColor:'#99CCFF'}}>
                 <div className="card-block">
                     <div className="d-flex justify-content-between">
                         <div className="">
-                            {/* <div className="form-check form-check-inline">
-                                <input className="" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" />
-                                <label className="mx-2" htmlFor="inlineRadio1">요청일자</label>
-                            </div>
-                            <div className="form-check form-check-inline">
-                                <input className="" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" />
-                                <label className="mx-2" htmlFor="inlineRadio2">발행일자</label>
-                            </div> */}
                             <div className="d-flex">
                                 <div className="d-flex align-items-center mr-3">
                                     <label className="">발행일자</label>
                                     <div className="mx-2">
                                         <div className="form-group form-check-inline">
                                             <div className="form-check-inline">
-                                                <input className="form-control" type="date" id="example-date-input"></input>
+                                                <input name='start_date' onChange={onChangeShowData} className="form-control" type="date" id="example-date-input"></input>
                                             </div>
                                             <span className="mx-3">-</span>
                                             <div className="form-check-inline">
-                                                <input className="form-control" type="date" id="example-date-input"></input>
+                                                <input name='end_date' onChange={onChangeShowData} className="form-control" type="date" id="example-date-input"></input>
                                             </div>
                                         </div>
                                     </div>
@@ -316,31 +320,30 @@ const TabTwo = () =>{
                                 <div className="d-flex align-items-center mr-3">
                                     <label className="">배정은행</label>
                                     <div className="mx-2">
-                                        <select className="form-control">
-                                            
-                                            <option>하나은행</option>
-                                            <option>포스텍은행</option>
-                                            <option>카이스트은행</option>
+                                        <select name='assign_bank' onChange={onChangeShowData} className="form-control">
+                                            <option value='하나은행'>하나은행</option>
+                                            <option value='포스텍은행'>포스텍은행</option>
+                                            <option value='카이스트'>카이스트은행</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div className="d-flex align-items-center mr-3">
                                     <label className="">자금목적</label>
                                     <div className="mx-2">
-                                        <select className="form-control">
+                                        <select name='issue_purpose' onChange={onChangeShowData} className="form-control">
                                             <option>전체</option>
-                                            <option>일반자금</option>
-                                            <option>재난지원</option>
+                                            <option value='일반자금'>일반자금</option>
+                                            <option value='재난지원'>재난지원</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div className="d-flex align-items-center">
                                     <label className="">처리상태</label>
                                     <div className="mx-2">
-                                        <select className="form-control">
+                                        <select name='processing_status' onChange={onChangeShowData} className="form-control">
                                             <option>전체</option>
-                                            <option>미배정</option>
-                                            <option>배정완료</option>
+                                            <option value='미배정'>미배정</option>
+                                            <option value='배정완료'>배정완료</option>
                                         </select>
                                     </div>
                                 </div>
@@ -348,15 +351,8 @@ const TabTwo = () =>{
                         </div>
                         
                         <div className="d-flex flex-column justify-content-between">
-                            {/* <div>
-                                <button type="button" className="btn btn-outline-info waves-effect waves-light" 
-                                        data-toggle="modal" 
-                                        data-target=".bs-example-modal-lg" 
-                                        onClick={onClickIssuePopup}
-                                >발행</button>
-                            </div> */}
                             <div>
-                                <button type="button" className="btn btn-outline-info waves-effect waves-light">조회</button>
+                                <button onClick={onClickShow} type="button" className="btn btn-outline-info waves-effect waves-light">조회</button>
                             </div>
                         </div>
                     </div>
@@ -417,11 +413,22 @@ const TabTwo = () =>{
                                 <td> {el.assign_number} </td>
                                 <td> {el.processing_status} </td>
                                 <td> 
-                                    <div className="d-flex justify-content-center" >
-                                        <button style={{width:'100%'}} //disabled={el.assign_number}
+                                    <div className="d-flex justify-content-center" >      
+                                        {el.assign_number!==undefined?(
+                                        <>
+                                            <Button1 style={{width:'100%'}} >배정</Button1>
+                                            <Button1 style={{width:'100%'}} >삭제</Button1>
+                                        </>
+                                        ):(
+                                        <>
+                                            <Button2 style={{width:'100%'}} value={el.issue_number} onClick={onClickAssign}>배정</Button2>
+                                            <Button2 style={{width:'100%'}} value={el.issue_number} onClick={onClickDelete}>삭제</Button2>
+                                        </>)}
+                                        
+                                        {/* <button style={{width:'100%'}} disabled={el.assign_number}
                                             type="button" className="btn btn-outline-info mr-2" value={el.issue_number} onClick={onClickAssign}>배정</button>
-                                        <button style={{width:'100%'}} //disabled={el.assign_number}
-                                            type="button" className="btn btn-outline-info waves-effect mr-2" value={el.issue_number} onClick={onClickDelete}>삭제</button>
+                                        <button style={{width:'100%'}} disabled={el.assign_number}
+                                            type="button" className="btn btn-outline-info waves-effect mr-2" value={el.issue_number} onClick={onClickDelete}>삭제</button> */}
                                     </div>
                                 </td>
                                 
@@ -541,7 +548,6 @@ const ModalBackground = styled.div`
 const ModalBody = styled.div`
     position: fixed;
     z-index: 1000;
-    
     top: 200px;
     right: 300px;
     left: 300px;
@@ -551,4 +557,26 @@ const ModalBody = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+`
+
+const Button2 = styled.button`
+    color: #ffffff;
+    border-radius: 0.5vh;
+    border: none;
+    background-color: #00b2a7;
+    outline: none;
+    padding: 0.5vw 1.5vh;
+    cursor : pointer;
+    margin-right : 5px;
+    margin-left : 5px;
+`
+const Button1 = styled.button`
+    color: #adacac;
+    border-radius: 0.5vh;
+    background-color: #ffffff;
+    border: 1px solid #adacac;
+    outline: none;
+    padding: 0.5vw 1.5vh;
+    margin-right : 5px;
+    margin-left : 5px;
 `

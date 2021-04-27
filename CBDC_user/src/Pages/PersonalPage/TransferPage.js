@@ -24,21 +24,22 @@ const TransferPage = ({userInfo}) => {
     
     const [bankSrc,setBankSrc] = useState("")
 
-
-    useEffect(()=>{
-
-    },[])
     const onClickSender= async(e) => {
-        // sender 세팅
-        const senderSnapshot = await dbService
-                    .collection(`UserInfo`)
-                    .where('account','==',e.target.value)
-                    .get()
-        const senderData = senderSnapshot.docs[0].data()
-        setSenderAccount(senderData.account)
-        //setSenderCBDCBalance(senderData.common_cbdc_balance)
-        setSenderWallet(senderData.wallet)
-        setSenderQuerySnapshot(senderSnapshot)
+        
+        try{
+            // sender 세팅
+            const senderSnapshot = await dbService
+                .collection(`UserInfo`)
+                .where('account','==',e.target.value)
+                .get()
+            const senderData = senderSnapshot.docs[0].data()
+            setSenderAccount(senderData.account)
+            setSenderWallet(senderData.wallet)
+            setSenderQuerySnapshot(senderSnapshot)
+        }catch(error){
+            console.log(error)
+        }
+        
     }
 
     const onClickReceiverAccount=(e)=>{
@@ -70,31 +71,31 @@ const TransferPage = ({userInfo}) => {
     }
 
     const onChangeCBDCAmount=(e) =>{
-        // sending CBDC 양
-        setCBDCAmount(e.target.value)
+        var val = Number(e.target.value.replace(/\D/g, ''))
+        setCBDCAmount(val.toLocaleString())
     }
     const transferClick= async(e) =>{
         try{
             
             if (senderQuerySnapshot.docs.length !== 0
                     && receiverQuerySnapshot.docs.length !== 0
-                    && CBDCAmount !== 0){
+                    && CBDCAmount !== "0"){
                 //sender, receiver 업데이트
 
-                
+                var val = Number(CBDCAmount.replace(/\D/g, ''))
                 const senderName = senderQuerySnapshot.docs[0].data().name
                 const senderDocID = senderQuerySnapshot.docs[0].id 
                 dbService
                     .doc(`UserInfo/${senderDocID}`)
                     .update({
-                        common_cbdc_balance : firebaseInstance.firestore.FieldValue.increment(-CBDCAmount)
+                        common_cbdc_balance : firebaseInstance.firestore.FieldValue.increment(-val)
                     })
 
                 const receiverDocID = receiverQuerySnapshot.docs[0].id
                 dbService
                     .doc(`UserInfo/${receiverDocID}`)
                     .update({
-                        common_cbdc_balance : firebaseInstance.firestore.FieldValue.increment(CBDCAmount)
+                        common_cbdc_balance : firebaseInstance.firestore.FieldValue.increment(val)
                     })
 
                 //Tx 생성
@@ -108,22 +109,22 @@ const TransferPage = ({userInfo}) => {
                         receiver_name : receiverName,
                         receiver_wallet : receiverWallet,
                         receiver_account : receiverAccount,
-                        amount : Number(CBDCAmount),
+                        amount : val,
                         transaction_type : "이체",
                         transaction_date : datetime,
                         cbdc_type : "common"
                     })
                 
 
-                const tokenName = Constants.TOKEN_NAME;
-                const req = await fetch('http://141.223.82.142:3030/v1/transfer',{
-                    headers: {
-                        'Content-Type':'application/json',
-                        'Accept':'application/json',
-                    },
-                    method : 'POST',
-                    body :JSON.stringify({sender : senderWallet, receiver:receiverWallet, amount:CBDCAmount, token:tokenName})
-                }) 
+                // const tokenName = Constants.TOKEN_NAME;
+                // const req = await fetch('http://141.223.82.142:3030/v1/transfer',{
+                //     headers: {
+                //         'Content-Type':'application/json',
+                //         'Accept':'application/json',
+                //     },
+                //     method : 'POST',
+                //     body :JSON.stringify({sender : senderWallet, receiver:receiverWallet, amount:val, token:tokenName})
+                // }) 
                 history.push('/personal/CBDC')
                 window.location.reload();
 
@@ -161,6 +162,7 @@ const TransferPage = ({userInfo}) => {
                             marginLeft: 'auto',
                             marginRight: 0
                         }}>
+                        <option></option>
                         <option value={userInfo.account}>{userInfo.account}</option>
                         
                     </select>
@@ -242,7 +244,7 @@ const TransferPage = ({userInfo}) => {
                 <Amount>
                     <div style={{fontSize: '3.8vw'}}>금액입력</div>
                     <div style={{display: 'flex', alignItems: 'center'}}>
-                        <PriceInput defaultValue="0" onChange={onChangeCBDCAmount}/>
+                        <PriceInput defaultValue="0" value={CBDCAmount} onChange={onChangeCBDCAmount}/>
                         <div style={{fontSize: '3.8vw', marginLeft: 10}}>D-KRW</div>
                     </div>
                 </Amount>

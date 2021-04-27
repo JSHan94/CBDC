@@ -17,17 +17,18 @@ const ExchangePage = ({userInfo}) => {
     }
 
     const onChangeAmount = (e) =>{
-        setAmount(e.target.value)
+        var val = Number(e.target.value.replace(/\D/g, ''))
+        setAmount(val.toLocaleString())
     }
     const onClickExchange = async(e)=>{
         
         // state:true = CBDC -> Fiat
         // state:false = Fiat -> CBDC
-        
-        if(amount > 0 && 
-            (state ? amount < userInfo.common_cbdc_balance : amount < userInfo.fiat_balance) 
+        var val = Number(amount.replace(/\D/g, ''))
+        if(val > 0 && 
+            (state ? val < userInfo.common_cbdc_balance : val < userInfo.fiat_balance) 
             ){
-            var exchangeMoney = amount
+            var exchangeMoney = val
             if(state){
                 exchangeMoney = -exchangeMoney
             }
@@ -66,6 +67,7 @@ const ExchangePage = ({userInfo}) => {
             // })
 
             history.push('/personal/CBDC')
+            window.location.reload();
         }
     }
     return (
@@ -147,8 +149,8 @@ const ExchangePage = ({userInfo}) => {
                 <Amount>
                     <div style={{fontSize: '3.8vw'}}>금액입력</div>
                     <div style={{display: 'flex', alignItems: 'center'}}>
-                        <PriceInput defaultValue="0" onChange = {onChangeAmount} />
-                        <div style={{fontSize: '3.8vw', marginLeft: 10}}>D-KRW</div>
+                        <PriceInput defaultValue="0" value={amount} onChange = {onChangeAmount} />
+                        <div style={{fontSize: '3.8vw', marginLeft: 10}}>{state? "D-KRW" : "원"}</div>
                     </div>
                 </Amount>
             </div>

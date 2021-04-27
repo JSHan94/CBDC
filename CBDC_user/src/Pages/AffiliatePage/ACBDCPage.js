@@ -39,7 +39,7 @@ const ACBDCPage = ({affiliateInfo}) => {
                             >
                                 이체
                             </Button1>
-                            <Button2 
+                            <Button1 
                                 style={{
                                     marginLeft: 5, 
                                     marginRight: 20
@@ -47,7 +47,7 @@ const ACBDCPage = ({affiliateInfo}) => {
                                 onClick={() => history.push('/affiliate/deal/cbdc')}
                             >
                                 거래내역
-                            </Button2>
+                            </Button1>
                         </div>
                     </CardChild>
                 </CardBody>

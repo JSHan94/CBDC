@@ -58,7 +58,7 @@ const CBDCPage = ({userInfo}) => {
                             >
                                 결제
                             </Button1>
-                            <Button2 
+                            <Button1 
                                 style={{
                                     marginLeft: 5, 
                                     marginRight: 20
@@ -66,7 +66,7 @@ const CBDCPage = ({userInfo}) => {
                                 onClick={() => history.push('/personal/deal/cbdc/common')}
                             >
                                 거래내역
-                            </Button2>
+                            </Button1>
                         </div>
                     </CardChild>
 
@@ -88,7 +88,7 @@ const CBDCPage = ({userInfo}) => {
                             >
                                 결제
                             </Button1>
-                            <Button2 
+                            <Button1 
                                 style={{
                                     marginLeft: 5, 
                                     marginRight: 20
@@ -96,7 +96,7 @@ const CBDCPage = ({userInfo}) => {
                                 onClick={() => history.push('/personal/deal/cbdc/disaster/Extinct')}
                             >
                                 거래내역
-                            </Button2>
+                            </Button1>
                         </div>
                     </CardChild>
 
@@ -109,7 +109,7 @@ const CBDCPage = ({userInfo}) => {
                             </div>
                         </div>
                         <div style={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginTop: 10}}>
-                            <Button2 
+                            <Button1 
                                 style={{
                                     marginLeft: 5, 
                                     fontSize: '3vw'
@@ -117,7 +117,7 @@ const CBDCPage = ({userInfo}) => {
                                 onClick={() => setModalshow(true)}
                             >
                                 기간별 잔액 확인하기
-                            </Button2>
+                            </Button1>
                             
                             <Button1 
                                 style={{marginLeft: 5}}
@@ -128,7 +128,7 @@ const CBDCPage = ({userInfo}) => {
                             >
                                 결제
                             </Button1>
-                            <Button2 
+                            <Button1 
                                 style={{
                                     marginLeft: 5, 
                                     marginRight: 20
@@ -136,7 +136,7 @@ const CBDCPage = ({userInfo}) => {
                                 onClick={() => history.push('/personal/deal/cbdc/disaster/Reduction')}
                             >
                                 거래내역
-                            </Button2>
+                            </Button1>
                         </div>
                     </CardChild>
                 </CardBody>
@@ -170,15 +170,15 @@ const CBDCPage = ({userInfo}) => {
                             top: 10,
                             right: '3.7vw'
                         }}>
-                            <Button2 
+                            <Button1 
                                 style={{
                                     marginLeft: 5, 
                                     fontSize: '3vw'
                                 }}
                             >
                                 2021년
-                            </Button2> <br />
-                            <Button2 
+                            </Button1> <br />
+                            <Button1 
                                 style={{
                                     marginLeft: 5, 
                                     marginTop: 5,
@@ -186,7 +186,7 @@ const CBDCPage = ({userInfo}) => {
                                 }}
                             >
                                 D-KRW
-                            </Button2>
+                            </Button1>
                         </div>
                         <ChartBar>
                             <Value>50,000</Value>
@@ -335,7 +335,7 @@ const CardBody = styled.div`
 `
 const CardChild = styled.div`
     width: 90vw;
-    height: 18.31vh;
+    height: 17vh;
     padding-top: 3.5vh;
     padding-bottom: 3vh;
     border-top: 1px solid #dcdcdc;

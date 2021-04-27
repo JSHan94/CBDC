@@ -28,11 +28,11 @@ const ASaveAccountPage = ({affiliateInfo}) => {
                         </div>
                     </div>
                     <div style={{display: 'flex', alignItems: 'center', marginTop: 10}}>
-                        <Button1 
+                        <Button2 
                             style={{marginLeft: 'auto'}}
                             //onClick={() => history.push('/affiliate/Exchange')}
-                        >이체</Button1>
-                        <Button2 
+                        >이체</Button2>
+                        <Button1
                             style={{
                                 marginLeft: 5, 
                                 marginRight: 20
@@ -40,7 +40,7 @@ const ASaveAccountPage = ({affiliateInfo}) => {
                             onClick={() => history.push('/affiliate/deal/save')}
                         >
                             거래내역
-                        </Button2>
+                        </Button1>
                     </div>
                 </CardChild>
             </Body>
