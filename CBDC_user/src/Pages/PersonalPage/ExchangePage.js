@@ -21,7 +21,6 @@ const ExchangePage = ({userInfo}) => {
         setAmount(val.toLocaleString())
     }
     const onClickExchange = async(e)=>{
-        
         // state:true = CBDC -> Fiat
         // state:false = Fiat -> CBDC
         var val = Number(amount.replace(/\D/g, ''))
@@ -54,17 +53,16 @@ const ExchangePage = ({userInfo}) => {
                             transaction_date : datetime,
                             cbdc_type : "common"
                         })
-            
-            //TODO : 원화->CBDC 일 때, CBDC->원화 일 때 트랜잭션 서로 다른 트랜잭션 생성 
-            // const tokenName = Constants.TOKEN_NAME;
-            // const req = await fetch('http://141.223.82.142:3030/v1/transfer',{
-            //     headers: {
-            //         'Content-Type':'application/json',
-            //         'Accept':'application/json',
-            //     },
-            //     method : 'POST',
-            //     body :JSON.stringify({sender : userInfo.wallet, receiver:userInfo.wallet, amount:exchangeMoney, token:tokenName})
-            // })
+
+            const tokenName = "token";
+            const req = await fetch('http://141.223.82.142:3030/v1/transfer',{
+                headers: {
+                    'Content-Type':'application/json',
+                    'Accept':'application/json',
+                },
+                method : 'POST',
+                body :JSON.stringify({sender : "cosmos1qwf9gvqh538rnjmtnq4xmaxmm74yjv9wd8htjt", receiver:"cosmos1qz49l8dc3ay5aun2hkndld962scnhg8adj3qa7", amount:exchangeMoney, token:tokenName})
+            }) 
 
             history.push('/personal/CBDC')
             window.location.reload();
@@ -111,15 +109,7 @@ const ExchangePage = ({userInfo}) => {
                         <option>{userInfo.wallet}</option>
                     </select>
                 </div>
-                {/* <div style={{marginTop: '1.5vh', display: 'flex', alignItems: 'center', width: '90vw', height: 30}}>
-                    <div style={{color: '#414141', 
-                                fontSize: '2.5vw', 
-                                color: '#8d8e8e',
-                                padding: 8,
-                                marginLeft: 'auto', 
-                                border: '1px solid #8d8e8e', 
-                                borderRadius: 10}}>adDE$FGG5f#%TG]F</div>
-                </div> */}
+
                 <div style={{marginTop: '4vh', borderBottom: '1px solid #000', display: 'flex', alignItems: 'center', width: '90vw', height: 40}}>
                     <div style={{color: '#000', fontSize: '3.5vw'}}>잔액</div>
                     <div style={{color: '#000', marginLeft: 'auto', fontSize: '3.5vw'}}>{userInfo.common_cbdc_balance&&userInfo.common_cbdc_balance.toLocaleString()} D-KRW</div>

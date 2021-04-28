@@ -9,7 +9,7 @@ import { dbService, firebaseInstance } from "../../fbase";
 const ATransferPage = ({affiliateInfo}) => {
     const userInfo = affiliateInfo
 
-    const [inaddress, setInaddress] = useState('')
+    const [inaddress, setInaddress] = useState(false)
 
     const [CBDCAmount, setCBDCAmount] = useState(0)
 
@@ -33,13 +33,13 @@ const ATransferPage = ({affiliateInfo}) => {
                     .get()
         const senderData = senderSnapshot.docs[0].data()
         setSenderAccount(senderData.account)
-        //setSenderCBDCBalance(senderData.common_cbdc_balance)
         setSenderWallet(senderData.wallet)
         setSenderQuerySnapshot(senderSnapshot)
     }
 
-    const onClickReceiverAccount=(e)=>{
+    const onChangeReceiverAccount=(e)=>{
         setReceiverAccount(e.target.value)
+        setInaddress(false)
     }
 
     const onClickReceiverBank=async(e)=>{
@@ -57,27 +57,26 @@ const ATransferPage = ({affiliateInfo}) => {
                 setReceiverName(receiverData.name)
                 setReceiverQuerySnapshot(receiverSnapshot)
                 setReceiverWallet(receiverData.wallet)
-                setInaddress("checked")
+                setInaddress(true)
             }else{
-                setInaddress("")
-                //setBankSrc("")
+                setInaddress(false)
             }
         }
     }
 
     const onChangeCBDCAmount=(e) =>{
-        // sending CBDC 양
-        setCBDCAmount(e.target.value)
+        var val = Number(e.target.value.replace(/\D/g, ''))
+        setCBDCAmount(val.toLocaleString())
     }
     const transferClick= async(e) =>{
         try{
-            console.log(senderQuerySnapshot)
+            
             if (senderQuerySnapshot.docs.length !== 0
                     && receiverQuerySnapshot.docs.length !== 0
                     && CBDCAmount !== 0){
                 //sender, receiver 업데이트
 
-                
+                var val = Number(CBDCAmount.replace(/\D/g, ''))
                 const senderName = senderQuerySnapshot.docs[0].data().name
                 const senderDocID = senderQuerySnapshot.docs[0].id 
                 dbService
@@ -104,12 +103,23 @@ const ATransferPage = ({affiliateInfo}) => {
                         receiver_name : receiverName,
                         receiver_wallet : receiverWallet,
                         receiver_account : receiverAccount,
-                        amount : Number(CBDCAmount),
+                        amount : val,
                         transaction_type : "이체",
                         transaction_date : datetime,
                         cbdc_type : "common"
                     })
                     
+
+                const tokenName = "token";
+                const req = await fetch('http://141.223.82.142:3030/v1/transfer',{
+                    headers: {
+                        'Content-Type':'application/json',
+                        'Accept':'application/json',
+                    },
+                    method : 'POST',
+                    body :JSON.stringify({sender : senderWallet, receiver:receiverWallet, amount:val, token:tokenName})
+                }) 
+
                 history.push('/affiliate/cbdc')
                 window.location.reload();
 
@@ -166,13 +176,10 @@ const ATransferPage = ({affiliateInfo}) => {
                 </div>
                 <div style={{marginTop: '6.76vh', borderBottom: '1px solid #000', display: 'flex', alignItems: 'center', width: '90vw', height: 40}}>
                     <div style={{color: '#000', fontSize: '3.5vw'}}>입금지갑주소</div>
-                    <select onClick={onClickReceiverAccount} 
-                        style={{color: '#000', marginLeft: 'auto', fontSize: '3.5vw'}}>
-                        <option value={"111-1111-1111"}>111-1111-1111</option>
-                        <option value={"222-2222-2222"}>222-2222-2222</option>
-                        <option value={"333-3333-3333"}>333-3333-3333</option>
-                        <option value={"444-4444-4444"}>444-4444-4444</option>
-                    </select>
+                    <input onClick={onChangeReceiverAccount} 
+                        style={{textAlign:'right', marginLeft: 'auto', fontSize: '3.5vw'}}>
+    
+                    </input>
                 </div>
                 <div style={{marginTop: "6.76vh", display: 'flex', alignItems: 'center', borderBottom: '1px solid #888888', width: '90vw', height: 40}}>
                     <div style={{color: '#000', fontSize: '3.5vw'}}>입금은행</div>
@@ -186,7 +193,7 @@ const ATransferPage = ({affiliateInfo}) => {
                                 alt="logo"
                                 style={{
                                     
-                                    height: 40,
+                                    height: 30,
                                 }}
                             />
                         }
@@ -210,7 +217,7 @@ const ATransferPage = ({affiliateInfo}) => {
                     </select>
                 </div>
                 {
-                (inaddress !== '') && <>
+                (inaddress === true) && <>
                 <div style={{marginTop: '8vh', color: '#00b2a7', fontSize: '3.73vw', width: '90vw'}}>아래와 같이 확인됩니다.</div>
                 <div style={{marginTop: '2vh', borderBottom: '1px solid #000', display: 'flex', alignItems: 'center', width: '90vw', height: 40}}>
                     <div style={{color: '#000', fontSize: '3.5vw'}}>{receiverName}</div>

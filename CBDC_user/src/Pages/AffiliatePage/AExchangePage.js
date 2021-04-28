@@ -18,17 +18,18 @@ const AExchangePage = ({affiliateInfo}) => {
     }
 
     const onChangeAmount = (e) =>{
-        setAmount(e.target.value)
+        var val = Number(e.target.value.replace(/\D/g, ''))
+        setAmount(val.toLocaleString())
     }
     const onClickExchange = async(e)=>{
         
         // state:true = CBDC -> Fiat
         // state:false = Fiat -> CBDC
-        
-        if(amount > 0 && 
-            (state ? amount < userInfo.common_cbdc_balance : amount < userInfo.fiat_balance) 
+        var val = Number(amount.replace(/\D/g, ''))
+        if(val > 0 && 
+            (state ? val < affiliateInfo.common_cbdc_balance : val < affiliateInfo.fiat_balance) 
             ){
-            var exchangeMoney = amount
+            var exchangeMoney = val
             if(state){
                 exchangeMoney = -exchangeMoney
             }
@@ -55,7 +56,18 @@ const AExchangePage = ({affiliateInfo}) => {
                             transaction_date : datetime,
                             cbdc_type : "common"
                         })
-            history.push('/affiliate/cbdc')
+
+            const tokenName = "token";
+            const req = await fetch('http://141.223.82.142:3030/v1/transfer',{
+                headers: {
+                    'Content-Type':'application/json',
+                    'Accept':'application/json',
+                },
+                method : 'POST',
+                body :JSON.stringify({sender : "cosmos1qwf9gvqh538rnjmtnq4xmaxmm74yjv9wd8htjt", receiver:"cosmos1qz49l8dc3ay5aun2hkndld962scnhg8adj3qa7", amount:exchangeMoney, token:tokenName})
+            }) 
+            history.push('/affiliate/CBDC')
+            window.location.reload();
         }
     }
     return (
@@ -137,7 +149,7 @@ const AExchangePage = ({affiliateInfo}) => {
                 <Amount>
                     <div style={{fontSize: '3.8vw'}}>금액입력</div>
                     <div style={{display: 'flex', alignItems: 'center'}}>
-                        <PriceInput defaultValue="0" onChange = {onChangeAmount} />
+                        <PriceInput defaultValue="0" value={amount} onChange = {onChangeAmount} />
                         <div style={{fontSize: '3.8vw', marginLeft: 10}}>D-KRW</div>
                     </div>
                 </Amount>

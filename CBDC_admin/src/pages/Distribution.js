@@ -286,7 +286,7 @@ const TabTwo=()=>{
             receiver_name: '한정수',
             bank_name: '하나은행',
             receiver_wallet:'-',
-            receiver_account:'111-1111-1111',
+            receiver_account:'777-7777-7777',
             amount:'-200,000',
             issue_number: 'HN2021-002'
         },
@@ -365,7 +365,7 @@ const TabTwo=()=>{
     const [data, setData] = useState([]);
     const [showData, setShowData] = useState([]) 
 
-    const TableColumnHeader = ["거래일시","고객번호","고객명","지갑주소","계좌번호","거래종류","사용처","사용은행","지갑주소","거래금액","배정번호"]
+    const TableColumnHeader = ["거래일시","고객번호","고객명","지갑주소","계좌번호","거래종류","사용처","사용은행","지갑주소(계좌번호)","거래금액","배정번호"]
    
     //DB에서 data값 가져오기
     useEffect(() => {

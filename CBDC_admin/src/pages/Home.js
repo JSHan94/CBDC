@@ -12,22 +12,74 @@ import 'react-simple-tabs-component/dist/index.css'
 
 const TabOne = () =>{
     const [state, setState] = useState({});
+    const [disabledValidity, setDisabledValidity] = useState(true);
+    const [disabledAccountSetting, setDisabledAccountSetting] = useState(true);
+    const [disabledSetRate, setDisabledSetRate] = useState(true);
 
-
+    useEffect(()=>{
+        console.log(state);
+    });
     const handleChange = (event) => {
+        
         if(event.target.name === "issued_amount"){
             var val = Number(event.target.value.replace(/\D/g, ''))
             setState({
                 ...state,
                 [event.target.name]: val.toLocaleString()
-            });   
-            console.log(state)         
+            });         
         }else{
-            setState({
-                ...state,
-                [event.target.name]: event.target.value
-            });
-           
+            if(event.target.name === "issue_purpose"){
+                // account_setting 활성화
+                
+                if(event.target.value === "재난지원"){
+                    setDisabledAccountSetting(false);
+                    setState({
+                        ...state,
+                        [event.target.name] : event.target.value,
+                        ["account_setting"]: ""
+                    })
+                }else{
+                    setState({
+                        ...state,
+                        [event.target.name] : event.target.value,
+                        ["account_setting"]: "일반형"
+                    });
+                }
+            }else if(event.target.name === "account_setting"){
+                // set_rate 활성화 (감소형일때)
+                if(event.target.value === "감소형"){
+                    setDisabledSetRate(false);
+                }else{
+                    setDisabledValidity(false);
+                }
+                setState({
+                    ...state,
+                    [event.target.name]: event.target.value
+                });
+
+            }else if(event.target.name === "set_rate"){
+                //validity 설정
+                var theDate = new Date(state["issue_day"])
+               
+                var newDate = new Date(theDate.setMonth(theDate.getMonth()+(100/parseInt(event.target.value))))
+                var dateString = newDate.getUTCFullYear().toString()+'-'
+                    + ((newDate.getMonth()+1)<10? "0"+(newDate.getMonth()+1).toString() : (newDate.getMonth()+1).toString()) +'-'
+                    + (newDate.getDate()<10? "0"+newDate.getDate().toString():newDate.getDate().toString())
+                
+                //setDisabledValidity(false)
+                setState({
+                    ...state,
+                    ["validity"]: dateString,
+                    [event.target.name]: event.target.value
+                })
+                
+            }else{
+                setState({
+                    ...state,
+                    [event.target.name]: event.target.value
+                });
+            }
+            
         }
         
     }
@@ -67,8 +119,7 @@ const TabOne = () =>{
                     <div className="clearfix"></div>
                 </nav>
             </div>
-            <div className="modal-body">
-                
+            <div className="modal-body">     
                 <div className="row mr-3" style={{marginBottom:20}}>
                     <div className="col-3 d-flex align-items-center" >
                         <label style={{whiteSpace: 'nowrap'}}>발행일자</label>
@@ -85,7 +136,8 @@ const TabOne = () =>{
                     <div className="col-3 d-flex align-items-center">
                         <label style={{whiteSpace: 'nowrap'}}>유효기간</label>
                         <div className="mx-2">
-                            <input className="form-control" 
+                            <input className="form-control"
+                                disabled={disabledValidity}
                                 type="date" 
                                 id="example-date-input"
                                 name="validity"
@@ -123,9 +175,9 @@ const TabOne = () =>{
                     <div className="col-3 d-flex align-items-center">
                         <label className="">계정설정</label>
                         <div className="mx-2">
-                            <select className="form-control"  name="account_setting" value={state.account_setting} onChange={handleChange}>
+                            <select className="form-control"  disabled={disabledAccountSetting} name="account_setting" value={state.account_setting} onChange={handleChange}>
                                 <option>계정 선택</option>
-                                <option value="일반형">일반형</option>
+                                {/* <option value="일반형">일반형</option> */}
                                 <option value="소멸형">소멸형</option>
                                 <option value="감소형">감소형</option> 
                             </select>
@@ -134,12 +186,11 @@ const TabOne = () =>{
                     <div className="col-3 d-flex align-items-center">
                         <label className="">월 감소비율</label>
                         <div className="mx-2">
-                            <select className="form-control"  name="set_rate" value={state.set_rate} onChange={handleChange}>
+                            <select className="form-control"  disabled={disabledSetRate} name="set_rate" value={state.set_rate} onChange={handleChange}>
                                 <option>감소율 선택</option>
-                                <option value="0">0.0 %</option>
+                                <option value="10">10.0 %</option>
                                 <option value="20">20.0 %</option>
-                                <option value="40">40.0 %</option>
-                                <option value="60">60.0 %</option>
+                                <option value="30">30.0 %</option>
                             </select>
                         </div>
                     </div>
@@ -209,22 +260,6 @@ const TabTwo = () =>{
         }
     }
 
-
-    //수정 값 state에 저장 완료
-    // const onClickEdit = async(e) => {
-    //     try{
-    //         const deleteSnapshot = await dbService
-    //         .collection(`IssueInfo`)
-    //         .where('issue_number','==',e.target.value)
-    //         .get()
-    //         await dbService.collection(`IssueInfo`).doc(deleteSnapshot.docs[0].id).update(
-    //             {...state})
-    //         window.location.reload();
-    //     }catch(error){
-    //         console.log(error)
-    //     }
-    // }
-
     const onChangeAssignBank = (e)=>{
         setAssignBank(e.target.value)
     }
@@ -256,7 +291,12 @@ const TabTwo = () =>{
             while(randomNum.length < 5){
                 randomNum = '0'+randomNum
             }
-            randomNum = "PT2021-"+randomNum
+            if (assignBank==="하나은행"){
+                randomNum = "HN2021-"+randomNum
+            }else{
+                randomNum = "PT2021-"+randomNum
+            }
+            
             await dbService.collection(`IssueInfo`).doc(assignSnapshot.docs[0].id).update({
                 processing_status : "배정완료",
                 assign_number : randomNum,
@@ -424,11 +464,6 @@ const TabTwo = () =>{
                                             <Button2 style={{width:'100%'}} value={el.issue_number} onClick={onClickAssign}>배정</Button2>
                                             <Button2 style={{width:'100%'}} value={el.issue_number} onClick={onClickDelete}>삭제</Button2>
                                         </>)}
-                                        
-                                        {/* <button style={{width:'100%'}} disabled={el.assign_number}
-                                            type="button" className="btn btn-outline-info mr-2" value={el.issue_number} onClick={onClickAssign}>배정</button>
-                                        <button style={{width:'100%'}} disabled={el.assign_number}
-                                            type="button" className="btn btn-outline-info waves-effect mr-2" value={el.issue_number} onClick={onClickDelete}>삭제</button> */}
                                     </div>
                                 </td>
                                 
@@ -437,17 +472,6 @@ const TabTwo = () =>{
                     }
                 </tbody>
             </table>
-            {/* <div className="d-flex justify-content-end">
-                <div>
-                    <button type="button" className="btn btn-outline-info waves-effect mr-2" onClick={onClickAssign}>배정</button>
-                    <button type="button" className="btn btn-outline-info waves-effect mr-2"
-                        data-toggle="modal" 
-                        data-target=".bs-example-modal-lg" 
-                        onClick={onClickEditPopup}
-                    >수정</button>
-                    <button type="button" className="btn btn-outline-info waves-effect" onClick={onDelete}>삭제</button>
-                </div>
-            </div> */}
             <div className="d-flex justify-content-end">
                 <div className="mt-3">
                     ※ 배정완료 후에는 수정, 삭제 불가능합니다.
@@ -515,7 +539,7 @@ const Home = ({history}) => {
     const [selectedTab, setSelectedTab] = useState(tabs[1].index)
 
     return (
-        <Base bankName={"한국은행"} history={history}>
+        <Base bankName={"중앙은행"} history={history}>
         <ContentWrapper>
             <Tabs tabs={tabs} onClick={setSelectedTab} selectedTab={selectedTab}/>
             

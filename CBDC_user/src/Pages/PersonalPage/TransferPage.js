@@ -42,7 +42,7 @@ const TransferPage = ({userInfo}) => {
         
     }
 
-    const onClickReceiverAccount=(e)=>{
+    const onChangeReceiverAccount=(e)=>{
         setReceiverAccount(e.target.value)
         setInaddress(false)
     }
@@ -116,15 +116,15 @@ const TransferPage = ({userInfo}) => {
                     })
                 
 
-                // const tokenName = Constants.TOKEN_NAME;
-                // const req = await fetch('http://141.223.82.142:3030/v1/transfer',{
-                //     headers: {
-                //         'Content-Type':'application/json',
-                //         'Accept':'application/json',
-                //     },
-                //     method : 'POST',
-                //     body :JSON.stringify({sender : senderWallet, receiver:receiverWallet, amount:val, token:tokenName})
-                // }) 
+                const tokenName = Constants.TOKEN_NAME;
+                const req = await fetch('http://141.223.82.142:3030/v1/transfer',{
+                    headers: {
+                        'Content-Type':'application/json',
+                        'Accept':'application/json',
+                    },
+                    method : 'POST',
+                    body :JSON.stringify({sender : senderWallet, receiver:receiverWallet, amount:val, token:tokenName})
+                }) 
                 history.push('/personal/CBDC')
                 window.location.reload();
 
@@ -182,13 +182,9 @@ const TransferPage = ({userInfo}) => {
                 </div>
                 <div style={{marginTop: '6.76vh', borderBottom: '1px solid #000', display: 'flex', alignItems: 'center', width: '90vw', height: 40}}>
                     <div style={{color: '#000', fontSize: '3.5vw'}}>입금지갑주소</div>
-                    <select onClick={onClickReceiverAccount} 
-                        style={{color: '#000', marginLeft: 'auto', fontSize: '3.5vw'}}>
-                        <option value={"111-1111-1111"}>111-1111-1111</option>
-                        <option value={"222-2222-2222"}>222-2222-2222</option>
-                        <option value={"333-3333-3333"}>333-3333-3333</option>
-                        <option value={"444-4444-4444"}>444-4444-4444</option>
-                    </select>
+                    <input onChange={onChangeReceiverAccount} 
+                        style={{ textAlign:'right', marginLeft: 'auto', fontSize: '3.5vw'}}>
+                    </input>
                 </div>
                 <div style={{marginTop: "6.76vh", display: 'flex', alignItems: 'center', borderBottom: '1px solid #888888', width: '90vw', height: 40}}>
                     <div style={{color: '#000', fontSize: '3.5vw'}}>입금은행</div>
@@ -201,7 +197,7 @@ const TransferPage = ({userInfo}) => {
                                 src={bankSrc} 
                                 alt="logo"
                                 style={{
-                                    height: 40,
+                                    height: 30,
                                 }}
                             />
                         }
