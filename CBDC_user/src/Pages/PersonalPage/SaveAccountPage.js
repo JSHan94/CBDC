@@ -28,6 +28,8 @@ const SaveAccountPage = ({userInfo}) => {
                                 {userInfo.fiat_balance&&userInfo.fiat_balance.toLocaleString()} 원
                             </div>
                         </div>
+                        <span style={{marginLeft:20}}>111-1111-1111</span>
+        
                         <div style={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginTop: 10}}>
                             <Button2 
                                 style={{marginLeft: 5}}

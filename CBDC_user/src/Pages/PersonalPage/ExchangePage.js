@@ -93,27 +93,7 @@ const ExchangePage = ({userInfo}) => {
                         </div>
                     </div>
                 </CardChild>
-                <div style={{marginTop: "6.76vh", display: 'flex', alignItems: 'center', borderBottom: '1px solid #000', width: '90vw', height: 40}}>
-                    <div style={{color: '#000', fontSize: '3.5vw'}}>{state ? "출금지갑주소" : "입금지갑주소"}</div>
-                    <select className="select"
-                        style={{
-                            width: 170, 
-                            height: 40,
-                            fontSize: '3.5vw', 
-                            textAlign: "right",
-                            border: 'none', 
-                            outline: 'none',
-                            marginLeft: 'auto',
-                            marginRight: 0
-                        }}>
-                        <option>{userInfo.wallet}</option>
-                    </select>
-                </div>
-
-                <div style={{marginTop: '4vh', borderBottom: '1px solid #000', display: 'flex', alignItems: 'center', width: '90vw', height: 40}}>
-                    <div style={{color: '#000', fontSize: '3.5vw'}}>잔액</div>
-                    <div style={{color: '#000', marginLeft: 'auto', fontSize: '3.5vw'}}>{userInfo.common_cbdc_balance&&userInfo.common_cbdc_balance.toLocaleString()} D-KRW</div>
-                </div>
+                
                 <div style={{marginTop: "6.76vh", display: 'flex', alignItems: 'center', borderBottom: '1px solid #888888', width: '90vw', height: 40}}>
                     <div style={{color: '#000', fontSize: '3.5vw'}}>{state ? "입금계좌번호" : "출금계좌번호"}</div>
                     <select className="select"
@@ -133,6 +113,36 @@ const ExchangePage = ({userInfo}) => {
                 <div style={{marginTop: '4vh', borderBottom: '1px solid #000', display: 'flex', alignItems: 'center', width: '90vw', height: 40}}>
                     <div style={{color: '#000', fontSize: '3.5vw'}}>잔액</div>
                     <div style={{color: '#000', marginLeft: 'auto', fontSize: '3.5vw'}}>{userInfo.fiat_balance&&userInfo.fiat_balance.toLocaleString()} 원</div>
+                </div>
+                <div style={{marginTop: "6.76vh", display: 'flex', alignItems: 'center', borderBottom: '1px solid #000', width: '90vw', height: 40}}>
+                    <div style={{color: '#000', fontSize: '3.5vw'}}>{state ? "출금지갑주소" : "입금지갑주소"}</div>
+                    <select className="select"
+                        style={{
+                            width: 170, 
+                            height: 40,
+                            fontSize: '3.5vw', 
+                            textAlign: "right",
+                            border: 'none', 
+                            outline: 'none',
+                            marginLeft: 'auto',
+                            marginRight: 0
+                        }}>
+                        <option>123-1231-1231</option>
+                    </select>
+                </div>
+                <div style={{marginTop: '1.5vh', display: 'flex', alignItems: 'center', width: '90vw', height: 30}}>
+                    <div style={{color: '#414141', 
+                                fontSize: '2.5vw', 
+                                color: '#8d8e8e',
+                                padding: 8,
+                                marginLeft: 'auto', 
+                                border: '1px solid #8d8e8e', 
+                                borderRadius: 10}}>{userInfo.wallet}</div>
+                </div>
+
+                <div style={{marginTop: '4vh', borderBottom: '1px solid #000', display: 'flex', alignItems: 'center', width: '90vw', height: 40}}>
+                    <div style={{color: '#000', fontSize: '3.5vw'}}>잔액</div>
+                    <div style={{color: '#000', marginLeft: 'auto', fontSize: '3.5vw'}}>{userInfo.common_cbdc_balance&&userInfo.common_cbdc_balance.toLocaleString()} D-KRW</div>
                 </div>
             </Body>
             <div style={{position: 'fixed', bottom: '8.45vh', left: 0, width: '100vw', display: 'flex', justifyContent: 'center', alignItems: 'center', borderTop: '1.35vh solid #eae9e9'}}>

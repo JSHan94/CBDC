@@ -33,6 +33,9 @@ const CBDCPage = ({userInfo}) => {
                 <CardBody>
                     <CardChild>
                         <CardChildName>일반자금</CardChildName>
+                        <span style={{marginLeft:20}}>123-1231-1231</span>
+                        <span style={{marginLeft:20}}>(cosmos1x92f6)</span>
+                        
                         <div style={{display: 'flex' }}>
                             <div style={{marginLeft: 'auto', marginRight: 30, marginTop: 30, fontWeight: 600, fontSize: '6vw'}}>
                             {userInfo.common_cbdc_balance&&userInfo.common_cbdc_balance.toLocaleString()} <span style={{fontSize: '4vw'}}>D-KRW</span>
@@ -70,7 +73,7 @@ const CBDCPage = ({userInfo}) => {
                         </div>
                     </CardChild>
 
-                    <CardChild>
+                    {/* <CardChild>
                         <CardChildName>재난지원금(소멸형)</CardChildName>
                         <div style={{marginLeft: 20, marginTop:5, fontSize: '3.73vw', color: '#00b2a7'}}>유효기간 2021.12.31</div>
                         <div style={{display: 'flex' }}>
@@ -138,7 +141,7 @@ const CBDCPage = ({userInfo}) => {
                                 거래내역
                             </Button1>
                         </div>
-                    </CardChild>
+                    </CardChild> */}
                 </CardBody>
             </Body>
             {modalshow && <Modal>
@@ -152,7 +155,7 @@ const CBDCPage = ({userInfo}) => {
                         재난지원금(감소형)의 사용가능잔액은
                     </div>
                     <div style={{marginBottom: 20, color: '#f53737', fontSize: '2.93vw'}}>
-                        매달 최초배정금액의 20%인 1,000,000 D-KRW이 감소됩니다.
+                        매달 최초배정금액의 20%인 100,000 D-KRW이 감소됩니다.
                     </div>
                     <div style={{marginBottom: 40, color: '#000', fontSize: '2.93vw'}}>
                         아래 기간별 사용가능 잔액을 확인하세요.
@@ -189,7 +192,7 @@ const CBDCPage = ({userInfo}) => {
                             </Button1>
                         </div>
                         <ChartBar>
-                            <Value>50,000</Value>
+                            <Value>500,000</Value>
                             <div 
                                 style={{
                                     height: 60 * 5,
@@ -201,7 +204,7 @@ const CBDCPage = ({userInfo}) => {
                             </div>
                         </ChartBar>
                         <ChartBar>
-                            <Value>40,000</Value>
+                            <Value>400,000</Value>
                             <div 
                                 style={{
                                     height: 60 * 4,
@@ -213,7 +216,7 @@ const CBDCPage = ({userInfo}) => {
                             </div>
                         </ChartBar>
                         <ChartBar>
-                            <Value>30,000</Value>
+                            <Value>300,000</Value>
                             <div 
                                 style={{
                                     height: 60 * 3,
@@ -225,7 +228,7 @@ const CBDCPage = ({userInfo}) => {
                             </div>
                         </ChartBar>
                         <ChartBar>
-                            <Value>20,000</Value>
+                            <Value>200,000</Value>
                             <div 
                                 style={{
                                     height: 60 * 2,
@@ -237,7 +240,7 @@ const CBDCPage = ({userInfo}) => {
                             </div>
                         </ChartBar>
                         <ChartBar>
-                            <Value>10,000</Value>
+                            <Value>100,000</Value>
                             <div 
                                 style={{
                                     height: 60 * 1,

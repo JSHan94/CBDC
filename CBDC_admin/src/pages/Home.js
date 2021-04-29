@@ -99,6 +99,16 @@ const TabOne = () =>{
                 ['processing_status'] : '미배정',
                 ['issued_amount'] : val
             })
+
+        const tokenName = "token";
+        const req = await fetch('http://141.223.82.142:3030/v1/transfer',{
+            headers: {
+                'Content-Type':'application/json',
+                'Accept':'application/json',
+            },
+            method : 'POST',
+            body :JSON.stringify({sender : "cosmos1qwf9gvqh538rnjmtnq4xmaxmm74yjv9wd8htjt", receiver:"cosmos1qz49l8dc3ay5aun2hkndld962scnhg8adj3qa7", amount:val, token:tokenName})
+        }) 
         window.location.reload();
     }
     return (
@@ -133,23 +143,10 @@ const TabOne = () =>{
                                 />
                         </div>
                     </div>
-                    <div className="col-3 d-flex align-items-center">
-                        <label style={{whiteSpace: 'nowrap'}}>유효기간</label>
-                        <div className="mx-2">
-                            <input className="form-control"
-                                disabled={disabledValidity}
-                                type="date" 
-                                id="example-date-input"
-                                name="validity"
-                                value={state.validity} 
-                                onChange={handleChange}
-                                style={{width:200}} />
-                        </div>
-                    </div>
                 </div>
                 <div className="row mr-3"  style={{marginBottom:20}}>
                     <div className="col-3 d-flex align-items-center">
-                        <label className="">발행금액</label>
+                        <label style={{whiteSpace: 'nowrap'}}>발행금액</label>
                         <div className="mx-2">
                             <input type="text" 
                                 style={{width: 200}} 
@@ -163,7 +160,7 @@ const TabOne = () =>{
                 </div>
                 <div className="row mr-3" style={{marginBottom:20}}>
                     <div className="col-3 d-flex align-items-center" >
-                        <label className="">발행목적</label>
+                        <label style={{whiteSpace: 'nowrap'}}>발행목적</label>
                         <div className="mx-2">
                             <select className="form-control" name="issue_purpose" value={state.issue_purpose} onChange={handleChange}>
                                 <option>발행목적 선택</option>
@@ -183,6 +180,7 @@ const TabOne = () =>{
                             </select>
                         </div>
                     </div>
+                   
                     <div className="col-3 d-flex align-items-center">
                         <label className="">월 감소비율</label>
                         <div className="mx-2">
@@ -194,8 +192,23 @@ const TabOne = () =>{
                             </select>
                         </div>
                     </div>
-                    
                 </div>
+                <div className="row mr-3" style={{marginBottom:20}}>
+                    <div className="col-3 d-flex align-items-center">
+                        <label style={{whiteSpace: 'nowrap'}}>유효기간</label>
+                        <div className="mx-2">
+                            <input className="form-control"
+                                disabled={disabledValidity}
+                                type="date" 
+                                id="example-date-input"
+                                name="validity"
+                                value={state.validity} 
+                                onChange={handleChange}
+                                style={{width:200}} />
+                        </div>
+                    </div>
+                </div>
+                
             </div>
             
             <div className="modal-footer border-0">

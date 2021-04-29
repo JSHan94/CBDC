@@ -70,6 +70,9 @@ const CBDCDealCommonPage = ({userInfo}) => {
                                 marginRight:10
                             }}
                         />CBDC-일반자금</div>
+                        <span style={{marginLeft:20}}>123-1231-1231</span>
+                        <span style={{marginLeft:20}}>(cosmos1x92f6)</span>
+                        
                         <div style={{marginTop: '6vw', display: 'flex', justifyContent: 'flex-end', position: 'relative'}}>
                             <div style={{fontSize: '6vw'}}>{userInfo.common_cbdc_balance&&userInfo.common_cbdc_balance.toLocaleString()} <span style={{fontSize: '4vw'}}>D-KRW</span></div>
                         </div>
@@ -107,7 +110,7 @@ const CBDCDealCommonPage = ({userInfo}) => {
                             </ListItemLeft>
                             <ListItemRight style={{textAlign: 'right'}}>    
                                 {
-                                    tx.receiver === userInfo.name
+                                    tx.receiver_name === userInfo.name
                                     ?(
                                         <>{tx.amount.toLocaleString()}</>
                                     )

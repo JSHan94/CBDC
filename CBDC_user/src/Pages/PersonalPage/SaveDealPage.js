@@ -62,6 +62,7 @@ const SaveDealPage = ({userInfo}) => {
                                 marginRight:10
                             }}
                         />저축예금</div>
+                        <span style={{marginLeft:30}}>111-1111-1111</span>
                         <div style={{marginTop: '6vw', display: 'flex', justifyContent: 'flex-end', position: 'relative'}}>
                             <div style={{fontSize: '6vw'}}>{userInfo.fiat_balance&&userInfo.fiat_balance.toLocaleString()} <span style={{fontSize: '4vw'}}>원</span></div>
                         </div>
