@@ -149,14 +149,15 @@ const TabOne = () =>{
                         <label style={{whiteSpace: 'nowrap'}}>발행금액</label>
                         <div className="mx-2">
                             <input type="text" 
-                                style={{width: 200}} 
+                                style={{width: 200, textAlign:'right'}} 
                                 className="form-control" 
                                 name="issued_amount"
                                 value={state.issued_amount} 
                                 onChange={handleChange} />
                         </div>
-                        <label className="">D-KRW</label>
+                        <label style={{whiteSpace: 'nowrap'}}>D-KRW</label>
                     </div>
+                   
                 </div>
                 <div className="row mr-3" style={{marginBottom:20}}>
                     <div className="col-3 d-flex align-items-center" >
