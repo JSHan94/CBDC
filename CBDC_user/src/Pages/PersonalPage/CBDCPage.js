@@ -72,10 +72,12 @@ const CBDCPage = ({userInfo}) => {
                             </Button1>
                         </div>
                     </CardChild>
-
-                    {/* <CardChild>
+                    {(userInfo.extinct_cbdc_balance!==0)&&
+                    <CardChild>
                         <CardChildName>재난지원금(소멸형)</CardChildName>
-                        <div style={{marginLeft: 20, marginTop:5, fontSize: '3.73vw', color: '#00b2a7'}}>유효기간 2021.12.31</div>
+                        <div style={{marginLeft: 20, marginTop:5, fontSize: '3vw', color: '#00b2a7'}}>유효기간 2021.05.31</div>
+                        <span style={{marginLeft:20}}>456-4564-4564</span>
+                        <span style={{marginLeft:20}}>(cosmos2y933z)</span>
                         <div style={{display: 'flex' }}>
                             <div style={{marginLeft: 'auto', marginRight: 30, marginTop: 30, fontWeight: 600, fontSize: '6vw'}}>
                             {userInfo.extinct_cbdc_balance&&userInfo.extinct_cbdc_balance.toLocaleString()}  <span style={{fontSize: '4vw'}}>D-KRW</span>
@@ -101,11 +103,14 @@ const CBDCPage = ({userInfo}) => {
                                 거래내역
                             </Button1>
                         </div>
-                    </CardChild>
-
+                    </CardChild>}
+                    
+                    {(userInfo.reduce_cbdc_balance!==0)&&
                     <CardChild>
                         <CardChildName>재난지원금(감소형)</CardChildName>
-                        <div style={{marginLeft: 20, marginTop:5, fontSize: '3.73vw', color: '#00b2a7'}}>유효기간 2021.06.30</div>
+                        <div style={{marginLeft: 20, marginTop:5, fontSize: '3vw', color: '#00b2a7'}}>유효기간 2021.06.15</div>
+                        <span style={{marginLeft:20}}>789-7897-7897</span>
+                        <span style={{marginLeft:20}}>(cosmos543z3t)</span>
                         <div style={{display: 'flex' }}>
                             <div style={{marginLeft: 'auto', marginRight: 30, marginTop: 30, fontWeight: 600, fontSize: '6vw'}}>
                             {userInfo.reduce_cbdc_balance&&userInfo.reduce_cbdc_balance.toLocaleString()}  <span style={{fontSize: '4vw'}}>D-KRW</span>
@@ -141,8 +146,10 @@ const CBDCPage = ({userInfo}) => {
                                 거래내역
                             </Button1>
                         </div>
-                    </CardChild> */}
+                    </CardChild>}
                 </CardBody>
+                
+            
             </Body>
             {modalshow && <Modal>
                 <ModalBackground onClick={() => setModalshow(false)}></ModalBackground>

@@ -61,6 +61,8 @@ const CBDCDealDisasterExtinctPage = ({userInfo}) => {
                                 marginRight:10
                             }}
                         />CBDC-재난지원(소멸형)</div>
+                        <span style={{marginLeft:20}}>456-4564-4564</span>
+                        <span style={{marginLeft:20}}>(cosmos2y933z)</span>
                         <div style={{marginTop: '6vw', display: 'flex', justifyContent: 'flex-end', position: 'relative'}}>
                             <div style={{fontSize: '6vw'}}>{userInfo.extinct_cbdc_balance&&userInfo.extinct_cbdc_balance.toLocaleString()} <span style={{fontSize: '4vw'}}>D-KRW</span></div>
                         </div>

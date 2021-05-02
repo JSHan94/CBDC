@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { history } from '../../_helpers';
 import GetDatetime from "../../_helpers/GetDatetime";
 import { dbService, firebaseInstance } from "../../fbase";
+import TokenTransfer from "../../_helpers/TokenTransfer";
 
 const ATransferPage = ({affiliateInfo}) => {
     const userInfo = affiliateInfo
@@ -13,11 +14,11 @@ const ATransferPage = ({affiliateInfo}) => {
 
     const [CBDCAmount, setCBDCAmount] = useState(0)
 
-    const [senderAccount, setSenderAccount] = useState(userInfo.account)
-    const [senderWallet,setSenderWallet] = useState(userInfo.wallet)
+    const [senderAccount, setSenderAccount] = useState(affiliateInfo.account)
+    const [senderWallet,setSenderWallet] = useState(affiliateInfo.wallet)
 
     const [receiverAccount, setReceiverAccount] = useState("")
-    const [receiverWallet,setReceiverWallet] = useState("111-1111-1111")
+    const [receiverWallet,setReceiverWallet] = useState("")
     const [receiverName, setReceiverName] = useState("")
 
     const [senderQuerySnapshot,setSenderQuerySnapshot] = useState([])
@@ -82,14 +83,14 @@ const ATransferPage = ({affiliateInfo}) => {
                 dbService
                     .doc(`UserInfo/${senderDocID}`)
                     .update({
-                        common_cbdc_balance : firebaseInstance.firestore.FieldValue.increment(-CBDCAmount)
+                        common_cbdc_balance : firebaseInstance.firestore.FieldValue.increment(-val)
                     })
 
                 const receiverDocID = receiverQuerySnapshot.docs[0].id
                 dbService
                     .doc(`UserInfo/${receiverDocID}`)
                     .update({
-                        common_cbdc_balance : firebaseInstance.firestore.FieldValue.increment(CBDCAmount)
+                        common_cbdc_balance : firebaseInstance.firestore.FieldValue.increment(val)
                     })
 
                 //Tx 생성
@@ -108,17 +109,9 @@ const ATransferPage = ({affiliateInfo}) => {
                         transaction_date : datetime,
                         cbdc_type : "common"
                     })
-                    
 
-                const tokenName = "token";
-                const req = await fetch('http://141.223.82.142:3030/v1/transfer',{
-                    headers: {
-                        'Content-Type':'application/json',
-                        'Accept':'application/json',
-                    },
-                    method : 'POST',
-                    body :JSON.stringify({sender : senderWallet, receiver:receiverWallet, amount:val, token:tokenName})
-                }) 
+                TokenTransfer(val)
+                
 
                 history.push('/affiliate/cbdc')
                 window.location.reload();
@@ -236,7 +229,7 @@ const ATransferPage = ({affiliateInfo}) => {
                 <Amount>
                     <div style={{fontSize: '3.8vw'}}>금액입력</div>
                     <div style={{display: 'flex', alignItems: 'center'}}>
-                        <PriceInput defaultValue="0" onChange={onChangeCBDCAmount}/>
+                        <PriceInput defaultValue="0" value={CBDCAmount} onChange={onChangeCBDCAmount}/>
                         <div style={{fontSize: '3.8vw', marginLeft: 10}}>D-KRW</div>
                     </div>
                 </Amount>

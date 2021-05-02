@@ -61,6 +61,8 @@ const CBDCDealDisasterReductionPage = ({userInfo}) => {
                                 marginRight:10
                             }}
                         />CBDC-재난지원(감소형)</div>
+                        <span style={{marginLeft:20}}>789-7897-7897</span>
+                        <span style={{marginLeft:20}}>(cosmos543z3t)</span>
                         <div style={{marginTop: '6vw', display: 'flex', justifyContent: 'flex-end', position: 'relative'}}>
                             <div style={{fontSize: '6vw'}}>{userInfo.reduce_cbdc_balance&&userInfo.reduce_cbdc_balance.toLocaleString()} <span style={{fontSize: '4vw'}}>D-KRW</span></div>
                         </div>

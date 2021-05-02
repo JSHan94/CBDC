@@ -9,7 +9,6 @@ import * as Constants from './Constants'
 
 const TransferPage = ({userInfo}) => {
     const [inaddress, setInaddress] = useState(false)
-    
     const [CBDCAmount, setCBDCAmount] = useState(0)
 
     const [senderAccount, setSenderAccount] = useState(userInfo.account)

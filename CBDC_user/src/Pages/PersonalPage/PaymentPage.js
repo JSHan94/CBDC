@@ -114,14 +114,15 @@ const PaymentPage = ({userInfo,affiliateInfo}) => {
                     <Content>일반자금 </Content>
                     <Content> <span style={{fontSize: '4.5vw'}}>{userInfo.common_cbdc_balance&&userInfo.common_cbdc_balance.toLocaleString()}</span> &nbsp;&nbsp; D-KRW</Content>
                 </Box>
-                {/* <Box style={{justifyContent: 'space-between', marginTop: '2vh', backgroundColor : (clickBtn === "extinct"? '#ccfdfa' : "#fffff") }}  onClick={()=>onClickCBDC("extinct")}>
+                <Box style={{justifyContent: 'space-between', marginTop: '2vh', backgroundColor : (clickBtn === "extinct"? '#ccfdfa' : "#fffff") }}  onClick={()=>onClickCBDC("extinct")}>
                     <Content>재난지원금 <span> <Badge>소멸형</Badge> </span></Content>
                     <Content> <span style={{fontSize: '4.5vw'}}>{userInfo.extinct_cbdc_balance&&userInfo.extinct_cbdc_balance.toLocaleString()}</span> &nbsp;&nbsp; D-KRW</Content>
                 </Box>
+                
                 <Box style={{justifyContent: 'space-between', marginTop: '2vh', backgroundColor : (clickBtn === "reduce"? '#ccfdfa' : "#fffff")}} onClick={()=>onClickCBDC("reduce")}>
                     <Content>재난지원금 <span> <Badge>감소형</Badge> </span></Content>
                     <Content> <span style={{fontSize: '4.5vw'}}>{userInfo.reduce_cbdc_balance&&userInfo.reduce_cbdc_balance.toLocaleString()}</span> &nbsp;&nbsp; D-KRW</Content>
-                </Box> */}
+                </Box>
 
                 <Title style={{marginTop: '4vh'}}>내 QR/바코드로 결제하기 <span style={{color: '#00b2a7'}}>(한가지 선택)</span></Title>
                 <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20vh'}}>

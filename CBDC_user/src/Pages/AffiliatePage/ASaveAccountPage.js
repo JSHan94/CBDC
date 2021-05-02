@@ -27,6 +27,7 @@ const ASaveAccountPage = ({affiliateInfo}) => {
                             {affiliateInfo.fiat_balance&&affiliateInfo.fiat_balance.toLocaleString()} <span style={{fontSize: '4vw'}}>원</span>
                         </div>
                     </div>
+                    <span style={{marginLeft:20}}>257-2572-2572</span>
                     <div style={{display: 'flex', alignItems: 'center', marginTop: 10}}>
                         <Button2 
                             style={{marginLeft: 'auto'}}

@@ -4,6 +4,7 @@ import { faChevronLeft, faHome, faChevronDown, faChevronUp, faSearch, faCog } fr
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { history } from '../../_helpers'
 import { dbService } from "../../fbase"
+import GetDatetime from "../../_helpers/GetDatetime"
 
 const ACBDCDealPage = ({affiliateInfo}) => {
     const userInfo = affiliateInfo
@@ -20,8 +21,8 @@ const ACBDCDealPage = ({affiliateInfo}) => {
             const txsArray = userQuerySnapshot.docs.map((doc)=>({
                             ...doc.data()
                         }))
-            console.log(txsArray)
-            setTxs(txsArray.filter(tx => tx.cbdc_type === "common"))
+            
+            setTxs(txsArray)
         }catch(error){
             console.log(error)
         }  
@@ -65,7 +66,9 @@ const ACBDCDealPage = ({affiliateInfo}) => {
                                 marginRight:10
                             }}
                         />
-                            CBDC-일반자금</div>
+                            가맹점 보유금</div>
+                        <span style={{marginLeft:20}}>147-1471-1471</span>
+                        <span style={{marginLeft:20}}>(cosmos456zzt)</span>
                         <div style={{marginTop: '6vw', display: 'flex', justifyContent: 'flex-end', position: 'relative'}}>
                             <div style={{fontSize: '6vw'}}>{userInfo.common_cbdc_balance&&userInfo.common_cbdc_balance.toLocaleString()} <span style={{fontSize: '4vw'}}>D-KRW</span></div>
                         </div>
@@ -94,12 +97,34 @@ const ACBDCDealPage = ({affiliateInfo}) => {
                         </ListShow>
                     </ListHeader>
                     {!state && <ListBody>
+                        <ListItem>
+                            <ListItemLeft>
+                                <Time>{GetDatetime()}</Time>
+                                <Content>한정수 이체</Content>
+                            </ListItemLeft>
+                            <ListItemRight style={{textAlign: 'right'}}>
+                                200,000<br/>
+                                D-KRW
+                            </ListItemRight>
+                            
+                        </ListItem>
+                        
                         {
+                            
                         txs.map((tx,index)=>(
                         <ListItem key={index}>
                             <ListItemLeft>
                                 <Time>{tx.transaction_date}</Time>
-                                <Content>{tx.receiver_name} {' '} {tx.transaction_type}</Content>
+                                {tx.transaction_type === "결제"? (
+                                    <>
+                                         <Content>매출</Content>
+                                    </>
+                                ):(
+                                    <>
+                                        <Content>{tx.receiver_name} {' '} {tx.transaction_type}</Content>
+                                    </>
+                                )}
+                                
                             </ListItemLeft>
                             <ListItemRight style={{textAlign: 'right'}}>    
                                 {

@@ -1,11 +1,35 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import { faChevronLeft, faHome, faChevronDown, faChevronUp, faSearch, faCog } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { history } from '../../_helpers'
+import { dbService } from "../../fbase"
 
 const ASaveDealPage = ({affiliateInfo}) => {
+    const userInfo =affiliateInfo
     const [state, setState] = useState(false)
+    const [txs,setTxs] = useState([])
+
+    const curDate = new Date().getUTCFullYear().toString()+"-"+(new Date().getUTCMonth()+1).toString()
+
+    const getUserTxHistory = async(e) =>{
+        try{
+            const userQuerySnapshot = await dbService
+                .collection(`TxInfo`)
+                .where('sender_account','==',userInfo.account)
+                .orderBy('transaction_date','desc')
+                .get()
+            const txsArray = userQuerySnapshot.docs.map((doc)=>({
+                            ...doc.data()
+                        }))
+            setTxs(txsArray.filter(doc=>doc["transaction_type"]==="교환"))
+        }catch(error){
+            console.log(error)
+        }  
+    }
+    useEffect(() =>{
+        getUserTxHistory()
+    },[userInfo])
     return (
         <div>
             <Header>
@@ -21,7 +45,7 @@ const ASaveDealPage = ({affiliateInfo}) => {
                         style={{
                             marginRight: '4vw'
                         }}
-                        onClick={() => history.push('/affiliate/save')}
+                        onClick={() => history.push('/affiliate/CBDC')}
                     >
                         D
                     </Dbutton>
@@ -38,10 +62,10 @@ const ASaveDealPage = ({affiliateInfo}) => {
                                 height:20,
                                 marginRight:10
                             }}
-                        />
-                        기업자유예금</div>
+                        />저축예금</div>
+                        <span style={{marginLeft:30}}>257-2572-2572</span>
                         <div style={{marginTop: '6vw', display: 'flex', justifyContent: 'flex-end', position: 'relative'}}>
-                            <div style={{fontSize: '6vw'}}>{affiliateInfo.fiat_balance&&affiliateInfo.fiat_balance.toLocaleString()} <span style={{fontSize: '4vw'}}>원</span></div>
+                            <div style={{fontSize: '6vw'}}>{userInfo.fiat_balance&&userInfo.fiat_balance.toLocaleString()} <span style={{fontSize: '4vw'}}>원</span></div>
                         </div>
                     </div>
                 </CardChild>
@@ -57,7 +81,7 @@ const ASaveDealPage = ({affiliateInfo}) => {
                 </Tools>
                 <List>
                     <ListHeader>
-                        <ListDate>2021-02</ListDate>
+                        <ListDate>{curDate}</ListDate>
                         <ListShow
                             onClick={() => setState(!state)}
                         >
@@ -68,15 +92,29 @@ const ASaveDealPage = ({affiliateInfo}) => {
                         </ListShow>
                     </ListHeader>
                     {!state && <ListBody>
-                        <ListItem>
-                            <ListItemLeft>
-                                <Time>02.01(월) 07:45:19</Time>
-                                <Content>교환</Content>
-                            </ListItemLeft>
-                            <ListItemRight style={{textAlign: 'right'}}>
-                                + 40,000 원
-                            </ListItemRight>
-                        </ListItem>
+                        {
+                        txs.map((tx,index)=>(
+                            <ListItem key={index}>
+                                <ListItemLeft>
+                                    <Time>{tx.transaction_date}</Time>
+                                    {
+                                        (tx.amount<0?
+                                            <Content>{'현금 전환'}</Content>
+                                            :<Content>{'CBDC 교환'}</Content>
+                                        )
+                                    }
+                                </ListItemLeft>
+                                <ListItemRight>
+                                    {
+                                        (tx.amount<0? 
+                                        (<>{(-tx.amount).toLocaleString() }원</>):
+                                        (<>{(-tx.amount).toLocaleString() }원</>))
+                                    }
+                                </ListItemRight>
+                            </ListItem>
+                        ))
+                        
+                    }
                     </ListBody>}
                 </List>
             </Body>
@@ -84,6 +122,7 @@ const ASaveDealPage = ({affiliateInfo}) => {
         </div>
     )
 }
+
 
 export { ASaveDealPage }
 

@@ -20,9 +20,18 @@ const ACBDCPage = ({affiliateInfo}) => {
                 </div>
             </Header>
             <Body>
+                <CardHeader>
+                    <CardName>CBDC</CardName>
+                    <div style={{display: 'flex', alignItems: 'center'}}>
+                        <CardName>{affiliateInfo.common_cbdc_balance &&affiliateInfo.common_cbdc_balance.toLocaleString()}</CardName>
+                        <CardMoney>D-KRW</CardMoney>    
+                    </div>
+                </CardHeader>
                 <CardBody>
                     <CardChild style={{marginTop: 50}}>
-                        <CardChildName>CBDC</CardChildName>
+                        <CardChildName>가맹점 보유금</CardChildName>
+                        <span style={{marginLeft:20}}>147-1471-1471</span>
+                        <span style={{marginLeft:20}}>(cosmos456zzt)</span>
                         <div style={{display: 'flex' }}>
                             <div style={{marginLeft: 'auto', marginRight: 30, marginTop: 30, fontWeight: 600, fontSize: '6vw'}}>
                                 {affiliateInfo.common_cbdc_balance &&affiliateInfo.common_cbdc_balance.toLocaleString()} <span style={{fontSize: '4vw'}}>D-KRW</span>
