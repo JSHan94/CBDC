@@ -96,19 +96,7 @@ const ACBDCDealPage = ({affiliateInfo}) => {
                             />
                         </ListShow>
                     </ListHeader>
-                    {!state && <ListBody>
-                        <ListItem>
-                            <ListItemLeft>
-                                <Time>{GetDatetime()}</Time>
-                                <Content>한정수 이체</Content>
-                            </ListItemLeft>
-                            <ListItemRight style={{textAlign: 'right'}}>
-                                200,000<br/>
-                                D-KRW
-                            </ListItemRight>
-                            
-                        </ListItem>
-                        
+                    {!state && <ListBody>                     
                         {
                             
                         txs.map((tx,index)=>(

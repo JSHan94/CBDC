@@ -226,7 +226,7 @@ const TabOne=()=>{
                                 
                                 <div className="d-flex flex-column justify-content-end">
                                     <div>
-                                        <button type="button" className="btn btn-outline-info waves-effect waves-light">조회</button>
+                                        <Button2>조회</Button2>
                                     </div>
                                 </div>
                             </div>
@@ -476,7 +476,7 @@ const TabTwo=()=>{
                         
                         <div className="d-flex flex-column justify-content-end">
                             <div>
-                                <button type="button" className="btn btn-outline-info waves-effect waves-light" onClick={onClickShow}>조회</button>
+                                <Button2 onClick={onClickShow}>조회</Button2>
                             </div>
                         </div>
                     </div>
@@ -557,4 +557,16 @@ export default Distribution;
 
 const Item = styled.tr`
     cursor: pointer;
+`
+
+const Button2 = styled.button`
+    color: #ffffff;
+    border-radius: 0.5vh;
+    border: none;
+    background-color: #00b2a7;
+    outline: none;
+    padding: 0.5vw 1.5vh;
+    cursor : pointer;
+    margin-right : 5px;
+    margin-left : 5px;
 `

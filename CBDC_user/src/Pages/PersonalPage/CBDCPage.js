@@ -72,7 +72,7 @@ const CBDCPage = ({userInfo}) => {
                             </Button1>
                         </div>
                     </CardChild>
-                    {(userInfo.extinct_cbdc_balance!==0)&&
+                    {(userInfo.extinct_cbdc_balance>0)&&
                     <CardChild>
                         <CardChildName>재난지원금(소멸형)</CardChildName>
                         <div style={{marginLeft: 20, marginTop:5, fontSize: '3vw', color: '#00b2a7'}}>유효기간 2021.05.31</div>
@@ -105,7 +105,7 @@ const CBDCPage = ({userInfo}) => {
                         </div>
                     </CardChild>}
                     
-                    {(userInfo.reduce_cbdc_balance!==0)&&
+                    {(userInfo.reduce_cbdc_balance>0)&&
                     <CardChild>
                         <CardChildName>재난지원금(감소형)</CardChildName>
                         <div style={{marginLeft: 20, marginTop:5, fontSize: '3vw', color: '#00b2a7'}}>유효기간 2021.06.15</div>

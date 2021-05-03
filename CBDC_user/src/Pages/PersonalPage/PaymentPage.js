@@ -6,7 +6,7 @@ import { history } from '../../_helpers';
 import { dbService, firebaseInstance } from "../../fbase";
 import GetDatetime from "../../_helpers/GetDatetime";
 import {useLocation} from "react-router"
-import * as Constants from './Constants'
+import TokenTransfer from "../../_helpers/TokenTransfer";
 
 const PaymentPage = ({userInfo,affiliateInfo}) => {
     const location = useLocation()
@@ -68,15 +68,8 @@ const PaymentPage = ({userInfo,affiliateInfo}) => {
                 .doc(`UserInfo/${affiliateInfo.uid}`)
                 .update(affiliate_cbdc_balance)
             
-            const tokenName = Constants.TOKEN_NAME;
-            const req = await fetch('http://141.223.82.142:3030/v1/transfer',{
-                headers: {
-                    'Content-Type':'application/json',
-                    'Accept':'application/json',
-                },
-                method : 'POST',
-                body :JSON.stringify({sender : userInfo.wallet, receiver:affiliateInfo.wallet, amount:val, token:tokenName})
-            })  
+    
+            TokenTransfer(val)
                   
             history.push('/personal/CBDC')
             window.location.reload();
@@ -109,20 +102,27 @@ const PaymentPage = ({userInfo,affiliateInfo}) => {
                 </Box>
                 <Title style={{marginTop: '2vh'}}>사용가능 CBDC <span style={{color: '#00b2a7'}}>(한가지 선택)</span></Title>
                 
-                {/* backgroundColor : (clickBtn === "reduce"? '#ccfdfa' : "#fffff") */}
+                
                 <Box style={{justifyContent: 'space-between', backgroundColor : (clickBtn === "common"? '#ccfdfa' : "#fffff") }}  onClick={()=>onClickCBDC("common")}>
                     <Content>일반자금 </Content>
                     <Content> <span style={{fontSize: '4.5vw'}}>{userInfo.common_cbdc_balance&&userInfo.common_cbdc_balance.toLocaleString()}</span> &nbsp;&nbsp; D-KRW</Content>
                 </Box>
-                <Box style={{justifyContent: 'space-between', marginTop: '2vh', backgroundColor : (clickBtn === "extinct"? '#ccfdfa' : "#fffff") }}  onClick={()=>onClickCBDC("extinct")}>
-                    <Content>재난지원금 <span> <Badge>소멸형</Badge> </span></Content>
-                    <Content> <span style={{fontSize: '4.5vw'}}>{userInfo.extinct_cbdc_balance&&userInfo.extinct_cbdc_balance.toLocaleString()}</span> &nbsp;&nbsp; D-KRW</Content>
-                </Box>
+                {
+                    (userInfo.extinct_cbdc_balance !== 0) &&
+                    <Box style={{justifyContent: 'space-between', marginTop: '2vh', backgroundColor : (clickBtn === "extinct"? '#ccfdfa' : "#fffff") }}  onClick={()=>onClickCBDC("extinct")}>
+                        <Content>재난지원금 <span> <Badge>소멸형</Badge> </span></Content>
+                        <Content> <span style={{fontSize: '4.5vw'}}>{userInfo.extinct_cbdc_balance&&userInfo.extinct_cbdc_balance.toLocaleString()}</span> &nbsp;&nbsp; D-KRW</Content>
+                    </Box>
+                }
+                {
+                    (userInfo.reduce_cbdc_balance !== 0)&&
+                    <Box style={{justifyContent: 'space-between', marginTop: '2vh', backgroundColor : (clickBtn === "reduce"? '#ccfdfa' : "#fffff")}} onClick={()=>onClickCBDC("reduce")}>
+                        <Content>재난지원금 <span> <Badge>감소형</Badge> </span></Content>
+                        <Content> <span style={{fontSize: '4.5vw'}}>{userInfo.reduce_cbdc_balance&&userInfo.reduce_cbdc_balance.toLocaleString()}</span> &nbsp;&nbsp; D-KRW</Content>
+                    </Box>
+                }
                 
-                <Box style={{justifyContent: 'space-between', marginTop: '2vh', backgroundColor : (clickBtn === "reduce"? '#ccfdfa' : "#fffff")}} onClick={()=>onClickCBDC("reduce")}>
-                    <Content>재난지원금 <span> <Badge>감소형</Badge> </span></Content>
-                    <Content> <span style={{fontSize: '4.5vw'}}>{userInfo.reduce_cbdc_balance&&userInfo.reduce_cbdc_balance.toLocaleString()}</span> &nbsp;&nbsp; D-KRW</Content>
-                </Box>
+                
 
                 <Title style={{marginTop: '4vh'}}>내 QR/바코드로 결제하기 <span style={{color: '#00b2a7'}}>(한가지 선택)</span></Title>
                 <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20vh'}}>

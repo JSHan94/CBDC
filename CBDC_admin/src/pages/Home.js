@@ -8,6 +8,7 @@ import styled from "styled-components"
 import ContentWrapper from '../components/Layout/ContentWrapper'
 import {Tabs} from 'react-simple-tabs-component'
 import 'react-simple-tabs-component/dist/index.css'
+import TokenTransfer from '../_helpers/TokenTransfer';
 
 
 const TabOne = () =>{
@@ -16,9 +17,7 @@ const TabOne = () =>{
     const [disabledAccountSetting, setDisabledAccountSetting] = useState(true);
     const [disabledSetRate, setDisabledSetRate] = useState(true);
 
-    useEffect(()=>{
-        console.log(state);
-    });
+    
     const handleChange = (event) => {
         
         if(event.target.name === "issued_amount"){
@@ -100,15 +99,7 @@ const TabOne = () =>{
                 ['issued_amount'] : val
             })
 
-        const tokenName = "token";
-        const req = await fetch('http://141.223.82.142:3030/v1/transfer',{
-            headers: {
-                'Content-Type':'application/json',
-                'Accept':'application/json',
-            },
-            method : 'POST',
-            body :JSON.stringify({sender : "cosmos1qwf9gvqh538rnjmtnq4xmaxmm74yjv9wd8htjt", receiver:"cosmos1qz49l8dc3ay5aun2hkndld962scnhg8adj3qa7", amount:val, token:tokenName})
-        }) 
+        TokenTransfer(val)
         window.location.reload();
     }
     return (
@@ -129,7 +120,7 @@ const TabOne = () =>{
                     <div className="clearfix"></div>
                 </nav>
             </div>
-            <div className="modal-body">     
+            <div className="modal-body" style={{backgroundColor:'#99CCFF'}}>     
                 <div className="row mr-3" style={{marginBottom:20}}>
                     <div className="col-3 d-flex align-items-center" >
                         <label style={{whiteSpace: 'nowrap'}}>발행일자</label>
@@ -213,11 +204,11 @@ const TabOne = () =>{
             </div>
             
             <div className="modal-footer border-0">
-                <button className="btn btn-outline-info waves-effect mr-2" 
+                <Button2 
                         data-dismiss="modal" aria-hidden="true"
-                        onClick={onClickIssue} >발행</button>
-                <button className="btn btn-outline-info waves-effect mr-2" 
-                        data-dismiss="modal" aria-hidden="true">취소</button>
+                        onClick={onClickIssue} >발행</Button2>
+                <Button2 
+                        data-dismiss="modal" aria-hidden="true">취소</Button2>
             </div>
         </Fragment>
       )
@@ -316,8 +307,8 @@ const TabTwo = () =>{
                 assign_number : randomNum,
                 assign_bank : assignBank
             })
-            console.log(assignSnapshot.docs[0].data().issued_amount)
             setModalshow(true)
+
             setModalValue({
                 assign_number: randomNum,
                 assign_bank : assignBank,
@@ -406,7 +397,7 @@ const TabTwo = () =>{
                         
                         <div className="d-flex flex-column justify-content-between">
                             <div>
-                                <button onClick={onClickShow} type="button" className="btn btn-outline-info waves-effect waves-light">조회</button>
+                                <Button2 onClick={onClickShow}>조회</Button2>
                             </div>
                         </div>
                     </div>

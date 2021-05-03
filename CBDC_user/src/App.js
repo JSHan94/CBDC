@@ -27,6 +27,7 @@ import {
         ATransferPage
     } from './Pages/AffiliatePage'
 import { dbService } from './fbase'
+import { Exchange } from './Pages/Components/Exchange'
 
 function App() {
     const [userInfo,setUserInfo] = useState([])
@@ -90,6 +91,7 @@ function App() {
                             <Route path="/personal/save" render ={()=><SaveAccountPage userInfo={userInfo}/>} />
                             <Route path="/personal/cbdc" render ={()=><CBDCPage userInfo={userInfo}/>} />
                             <Route path="/personal/exchange" render ={()=><ExchangePage userInfo={userInfo}/>} />
+
                             <Route path="/personal/transfer" render ={()=><TransferPage userInfo={userInfo}/>}/>
                             <Route path="/personal/payment/read-qr" render ={()=><PaymentQR userInfo={userInfo}/>} />
                             <Route path="/personal/payment" render ={()=><PaymentPage userInfo={userInfo} affiliateInfo={affiliateInfo}/>} />
