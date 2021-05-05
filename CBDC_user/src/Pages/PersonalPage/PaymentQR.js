@@ -12,7 +12,7 @@ const PaymentQR = () => {
                     <FontAwesomeIcon 
                         icon={faChevronLeft} 
                         style={{color: "#000", fontSize: '4vw', marginLeft: '5vw'}}
-                        onClick={() => history.push('/personal/payment')}
+                        onClick={() => history.goBack()}
                     />
                     <HeaderText>결제하기</HeaderText>
                     <div>

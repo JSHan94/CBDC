@@ -9,7 +9,7 @@ import ContentWrapper from '../components/Layout/ContentWrapper'
 import {Tabs} from 'react-simple-tabs-component'
 import 'react-simple-tabs-component/dist/index.css'
 import TokenTransfer from '../_helpers/TokenTransfer';
-
+import {USER_ID,AFFILIATE_ID} from '../constants/Constants'
 
 const TabOne = () =>{
     const [state, setState] = useState({});
@@ -19,7 +19,6 @@ const TabOne = () =>{
 
     
     const handleChange = (event) => {
-        
         if(event.target.name === "issued_amount"){
             var val = Number(event.target.value.replace(/\D/g, ''))
             setState({
@@ -98,6 +97,22 @@ const TabOne = () =>{
                 ['processing_status'] : '미배정',
                 ['issued_amount'] : val
             })
+        if (state['account_setting']==="감소형"){
+            await dbService
+                .collection(`UserInfo`)
+                .doc(USER_ID)
+                .update({
+                    reduce_cbdc_balance : 500000
+                })
+                
+        }else if(state['account_setting']==="소멸형"){
+            await dbService
+                .collection(`UserInfo`)
+                .doc(USER_ID)
+                .update({
+                    extinct_cbdc_balance : 500000
+                })
+        }
 
         TokenTransfer(val)
         window.location.reload();
@@ -238,7 +253,6 @@ const TabTwo = () =>{
         })
     }
     const onClickShow = () =>{
-
         for (var key in showData){
             if(key ==="start_date"){
                 setData(data.filter(e=>e["issue_day"] >= showData[key]))
@@ -275,7 +289,6 @@ const TabTwo = () =>{
                 .collection(`IssueInfo`)
                 .where('issue_number','==',e.target.value)
                 .get()
-
             await dbService.collection(`IssueInfo`).doc(deleteSnapshot.docs[0].id).delete()
             window.location.reload();
         }catch(error){

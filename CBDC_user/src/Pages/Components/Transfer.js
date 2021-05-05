@@ -10,7 +10,7 @@ import TokenTransfer from "../../_helpers/TokenTransfer";
 const Transfer = ({userInfo, returnPage}) => {
     const [inaddress, setInaddress] = useState(false)
     const [CBDCAmount, setCBDCAmount] = useState(0)
-
+    const [walletShow,setWalletShow] = useState(false)
     const [senderAccount, setSenderAccount] = useState(userInfo.account)
     const [senderWallet,setSenderWallet] = useState(userInfo.wallet)
 
@@ -24,7 +24,6 @@ const Transfer = ({userInfo, returnPage}) => {
     const [bankSrc,setBankSrc] = useState("")
 
     const onClickSender= async(e) => {
-        
         try{
             // sender 세팅
             const senderSnapshot = await dbService
@@ -35,6 +34,7 @@ const Transfer = ({userInfo, returnPage}) => {
             setSenderAccount(senderData.account)
             setSenderWallet(senderData.wallet)
             setSenderQuerySnapshot(senderSnapshot)
+            setWalletShow(true)
         }catch(error){
             console.log(error)
         }
@@ -159,15 +159,19 @@ const Transfer = ({userInfo, returnPage}) => {
                         
                     </select>
                 </div>
-                <div style={{marginTop: '1.5vh', display: 'flex', alignItems: 'center', width: '90vw', height: 30}}>
-                    <div style={{color: '#414141', 
-                                fontSize: '2.5vw', 
-                                color: '#8d8e8e',
-                                padding: 8,
-                                marginLeft: 'auto', 
-                                border: '1px solid #8d8e8e', 
-                                borderRadius: 10}}>{userInfo.wallet}</div>
-                </div>
+                {
+                    walletShow &&(
+                    <div style={{marginTop: '1.5vh', display: 'flex', alignItems: 'center', width: '90vw', height: 30}}>
+                        <div style={{color: '#414141', 
+                                    fontSize: '2.5vw', 
+                                    color: '#8d8e8e',
+                                    padding: 8,
+                                    marginLeft: 'auto', 
+                                    border: '1px solid #8d8e8e', 
+                                    borderRadius: 10}}>{userInfo.wallet}</div>
+                    </div>)
+                }
+                
                 <div style={{marginTop: '4vh', borderBottom: '1px solid #000', display: 'flex', alignItems: 'center', width: '90vw', height: 40}}>
                     <div style={{color: '#000', fontSize: '3.5vw'}}>잔액</div>
                     <div style={{color: '#000', marginLeft: 'auto', fontSize: '3.5vw'}}>{userInfo.common_cbdc_balance&&userInfo.common_cbdc_balance.toLocaleString()}  D-KRW</div>

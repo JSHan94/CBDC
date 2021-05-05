@@ -4,7 +4,6 @@ import { faChevronLeft, faHome, faChevronDown, faChevronUp, faSearch, faCog } fr
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { history } from '../../_helpers'
 import { dbService } from "../../fbase"
-import GetDatetime from "../../_helpers/GetDatetime"
 
 const ACBDCDealPage = ({affiliateInfo}) => {
     const userInfo = affiliateInfo
@@ -18,11 +17,20 @@ const ACBDCDealPage = ({affiliateInfo}) => {
                 .where('receiver_account','==',userInfo.account)
                 .orderBy('transaction_date','desc')
                 .get()
-            const txsArray = userQuerySnapshot.docs.map((doc)=>({
+            const txsArrayA = userQuerySnapshot.docs.map((doc)=>({
                             ...doc.data()
                         }))
-            
-            setTxs(txsArray)
+
+            const senderQuerySnapshot = await dbService
+                .collection(`TxInfo`)
+                .where('sender_account','==',userInfo.account)
+                .orderBy('transaction_date','desc')
+                .get()
+            const txsArrayB = senderQuerySnapshot.docs.map((doc)=>({
+                ...doc.data()
+            })).filter(doc=>doc.transaction_type ==="이체")
+            console.log(txsArrayB)
+            setTxs([...txsArrayB,...txsArrayA])
         }catch(error){
             console.log(error)
         }  
@@ -122,7 +130,7 @@ const ACBDCDealPage = ({affiliateInfo}) => {
                                     )
                                     :
                                     (
-                                        <></>
+                                        <>{(-tx.amount).toLocaleString()}</>
                                     )
                                 }
                                 <br/>

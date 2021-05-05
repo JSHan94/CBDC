@@ -1,12 +1,38 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import { faChevronLeft, faHome, faBars, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { history } from '../../_helpers';
+import { dbService } from "../../fbase";
+
 
 const CBDCPage = ({userInfo}) => {
     const [modalshow, setModalshow] = useState(false)
     const totalCBDC = userInfo.common_cbdc_balance + userInfo.reduce_cbdc_balance + userInfo.extinct_cbdc_balance
+    const [extinctValidity,setExtinctValidity] = useState("")
+    const [reduceValidity,setReduceValidity] = useState("")
+    const [validity,setValidity] =useState({})
+    const getIssueData = async(e) =>{
+        try{
+            dbService
+            .collection(`IssueInfo`)
+            .get().then((snpashot)=>{
+                snpashot.forEach((doc)=>{
+                    if(doc.data().account_setting === "감소형"){
+                        setReduceValidity(doc.data().validity)
+                    }else if(doc.data().account_setting ==="소멸형"){
+                        setExtinctValidity(doc.data().validity)
+                    }
+                })
+            })
+            return 0
+        }catch(error){
+            console.log(error)
+        }
+    }
+    useEffect(()=>{
+        getIssueData()
+    },[])
 
     return (
         <div>
@@ -75,7 +101,7 @@ const CBDCPage = ({userInfo}) => {
                     {(userInfo.extinct_cbdc_balance>0)&&
                     <CardChild>
                         <CardChildName>재난지원금(소멸형)</CardChildName>
-                        <div style={{marginLeft: 20, marginTop:5, fontSize: '3vw', color: '#00b2a7'}}>유효기간 2021.05.31</div>
+                        <div style={{marginLeft: 20, marginTop:5, fontSize: '3vw', color: '#00b2a7'}}>유효기간 {extinctValidity}</div>
                         <span style={{marginLeft:20}}>456-4564-4564</span>
                         <span style={{marginLeft:20}}>(cosmos2y933z)</span>
                         <div style={{display: 'flex' }}>
@@ -108,7 +134,7 @@ const CBDCPage = ({userInfo}) => {
                     {(userInfo.reduce_cbdc_balance>0)&&
                     <CardChild>
                         <CardChildName>재난지원금(감소형)</CardChildName>
-                        <div style={{marginLeft: 20, marginTop:5, fontSize: '3vw', color: '#00b2a7'}}>유효기간 2021.06.15</div>
+                        <div style={{marginLeft: 20, marginTop:5, fontSize: '3vw', color: '#00b2a7'}}>유효기간 {reduceValidity}</div>
                         <span style={{marginLeft:20}}>789-7897-7897</span>
                         <span style={{marginLeft:20}}>(cosmos543z3t)</span>
                         <div style={{display: 'flex' }}>

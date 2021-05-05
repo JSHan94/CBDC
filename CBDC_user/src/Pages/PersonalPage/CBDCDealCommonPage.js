@@ -33,7 +33,6 @@ const CBDCDealCommonPage = ({userInfo}) => {
     }
     useEffect(() =>{
         getUserTxHistory()
-        console.log(txs)
     },[userInfo,setTxs])
     const [state, setState] = useState(false)
 
