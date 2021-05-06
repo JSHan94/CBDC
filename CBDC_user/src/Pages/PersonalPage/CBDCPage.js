@@ -11,7 +11,6 @@ const CBDCPage = ({userInfo}) => {
     const totalCBDC = userInfo.common_cbdc_balance + userInfo.reduce_cbdc_balance + userInfo.extinct_cbdc_balance
     const [extinctValidity,setExtinctValidity] = useState("")
     const [reduceValidity,setReduceValidity] = useState("")
-    const [validity,setValidity] =useState({})
     const getIssueData = async(e) =>{
         try{
             dbService
@@ -371,7 +370,7 @@ const CardBody = styled.div`
 `
 const CardChild = styled.div`
     width: 90vw;
-    height: 17vh;
+    height: 19vh;
     padding-top: 3.5vh;
     padding-bottom: 3vh;
     border-top: 1px solid #dcdcdc;
@@ -391,7 +390,7 @@ const CardChildName = styled.div`
 `
 const Button1 = styled.button`
     color: #ffffff;
-    height: 4.19vh;
+    height: 4vh;
     border-radius: 2vh;
     border: none;
     background-color: #00b2a7;
@@ -464,7 +463,7 @@ const Value = styled.div`
 const Xline = styled.div`
     height: 1px;
     width: 100%;
-    // margin-left: 45px;
+    margin-left: 45px;
     background-color: #888888;
 `
 const Xlabel = styled.div`

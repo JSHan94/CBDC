@@ -113,7 +113,7 @@ const ACBDCDealPage = ({affiliateInfo}) => {
                                 <Time>{tx.transaction_date}</Time>
                                 {tx.transaction_type === "결제"? (
                                     <>
-                                         <Content>매출</Content>
+                                         <Content>매출 ({tx.sender_name})</Content>
                                     </>
                                 ):(
                                     <>

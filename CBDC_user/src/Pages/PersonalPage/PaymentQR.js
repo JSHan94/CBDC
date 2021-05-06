@@ -1,10 +1,19 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import { faChevronLeft, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { history } from '../../_helpers';
 
 const PaymentQR = () => {
+
+    let timeout;
+
+    useEffect(()=>{
+        clearTimeout(timeout)
+        timeout = setTimeout(()=>{
+            history.goBack()
+        },3000)
+    },[])
     try{
         return (
             <div>
