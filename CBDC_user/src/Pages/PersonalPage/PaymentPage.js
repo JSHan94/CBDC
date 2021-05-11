@@ -92,12 +92,12 @@ const PaymentPage = ({userInfo,affiliateInfo}) => {
                 />
                 <HeaderText>결제하기</HeaderText>
                 <div>
-                    <FontAwesomeIcon icon={faTimes} style={{color: "#000", fontSize: '4vw', marginRight: '5vw'}}/>
+                    <FontAwesomeIcon icon={faTimes} style={{color: "#000", fontSize: '4vw', marginRight: '5vw',cursor:'pointer'}}/>
                 </div>
             </Header>
             <Body>
                 <Title style={{marginTop: '2vh'}}>가맹점 QR읽기</Title>
-                <Box style={{marginBottom: '4vh'}} >
+                <Box style={{marginBottom: '4vh',cursor:'pointer'}} >
                     <img src="/images/capture.png" alt="qr" onClick={onClickQR} />
                 </Box>
                 <Title style={{marginTop: '2vh'}}>사용가능 CBDC <span style={{color: '#00b2a7'}}>(한가지 선택)</span></Title>
@@ -180,7 +180,7 @@ const PaymentPage = ({userInfo,affiliateInfo}) => {
                         fontSize: '3.7vw',
                         color: "#6c6969"
                     }}>
-                        재난지원금의 경우, 사용 처 제한이<br/> 있을 수 있으니 확인 하세요.
+                        재난지원금의 경우, 사용처 제한이<br/> 있을 수 있으니 확인 하세요.
                     </div>
                     <button
                         onClick={() => setModalshow(false)}

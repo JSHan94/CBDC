@@ -33,12 +33,12 @@ const CBDCDealDisasterReductionPage = ({userInfo}) => {
             <Header>
                 <FontAwesomeIcon 
                     icon={faChevronLeft} 
-                    style={{color: "#000", fontSize: '4vw', marginLeft: '5vw'}}
+                    style={{color: "#000", fontSize: '4vw', marginLeft: '5vw', cursor:'pointer'}}
                     onClick={() => history.push('/personal/CBDC')}
                 />
                 <HeaderText>거래내역조회</HeaderText>
                 <div style={{display: 'flex', alignItems: 'center'}}>
-                    <FontAwesomeIcon icon={faHome} style={{color: "#000", fontSize: '4vw', marginRight: '3vw'}}/>
+                    <FontAwesomeIcon icon={faHome} style={{cursor:'pointer', color: "#000", fontSize: '4vw', marginRight: '3vw'}}/>
                     <Dbutton
                         style={{
                             marginRight: '4vw'

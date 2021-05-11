@@ -130,7 +130,7 @@ const Transfer = ({userInfo, returnPage}) => {
             <Header>
                 <FontAwesomeIcon 
                     icon={faChevronLeft} 
-                    style={{color: "#000", fontSize: '4vw', marginLeft: '5vw'}}
+                    style={{color: "#000", fontSize: '4vw', marginLeft: '5vw',cursor:'pointer'}}
                     onClick={() => history.push(returnPage)}
                 />
                 <HeaderText>CBDC 이체하기</HeaderText>

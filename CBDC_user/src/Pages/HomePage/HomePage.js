@@ -85,6 +85,7 @@ const HomeButton = styled.button`
   border-radius: 6.67vw;
   border: none;
   margin: 5px;
+  cursor : pointer;
 `
 const HomeFooterLogo = styled.img`
   width: 34vw;

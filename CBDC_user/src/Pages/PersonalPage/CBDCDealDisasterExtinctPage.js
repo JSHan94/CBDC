@@ -33,7 +33,7 @@ const CBDCDealDisasterExtinctPage = ({userInfo}) => {
             <Header>
                 <FontAwesomeIcon 
                     icon={faChevronLeft} 
-                    style={{color: "#000", fontSize: '4vw', marginLeft: '5vw'}}
+                    style={{color: "#000", fontSize: '4vw', marginLeft: '5vw', cursor:'pointer'}}
                     onClick={() => history.push('/personal/CBDC')}
                 />
                 <HeaderText>거래내역조회</HeaderText>

@@ -38,7 +38,7 @@ const CBDCPage = ({userInfo}) => {
             <Header>
                 <FontAwesomeIcon 
                     icon={faChevronLeft} 
-                    style={{color: "#000", fontSize: '4vw', marginLeft: '5vw'}}
+                    style={{color: "#000", fontSize: '4vw', marginLeft: '5vw', cursor:'pointer'}}
                     onClick={() => history.push('/personal')}
                 />
                 <HeaderText style={{marginLeft: 40}}>전계좌조회</HeaderText>
@@ -365,13 +365,13 @@ const CardMoney = styled.div`
     margin: 0 15px;
 `
 const CardBody = styled.div`
-    min-height: 200px;
+    min-height: 150px;
     margin-bottom: 4vw;
 `
 const CardChild = styled.div`
     width: 90vw;
-    height: 19vh;
-    padding-top: 3.5vh;
+    height: 18vh;
+    padding-top: 1vh;
     padding-bottom: 3vh;
     border-top: 1px solid #dcdcdc;
     box-shadow: 1px 2px 6px 1px #bfcfea;
@@ -472,3 +472,4 @@ const Xlabel = styled.div`
     margin-top: 3px;
     font-size: 2.93vw;
 `
+

@@ -10,7 +10,7 @@ const ASaveAccountPage = ({affiliateInfo}) => {
             <Header>
                 <FontAwesomeIcon 
                     icon={faChevronLeft} 
-                    style={{color: "#000", fontSize: '4vw', marginLeft: '5vw'}}
+                    style={{color: "#000", fontSize: '4vw', marginLeft: '5vw',cursor:'pointer'}}
                     onClick={() => history.push('/affiliate')}
                 />
                 <HeaderText style={{marginLeft: 40}}>전계좌조회</HeaderText>
