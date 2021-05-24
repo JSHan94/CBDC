@@ -19,13 +19,13 @@ app.post('/v1/transfer', (req, res) => {
     try{
         var cmd = `yes y | sh CBDC.sh ${req.body.sender} ${req.body.receiver} ${req.body.amount}${req.body.token}` 
         
-        console.log(cmd)
+        //console.log(cmd)
         exec(cmd,
             function (error, stdout, stderr) {
-                console.log('stdout: ' + stdout);
-                console.log('stderr: ' + stderr);
+                //console.log('stdout: ' + stdout);
+                //console.log('stderr: ' + stderr);
                 if (error !== null) {
-                console.log('exec error: ' + error);
+                //console.log('exec error: ' + error);
                 }
             });
         
