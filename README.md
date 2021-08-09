@@ -2,6 +2,11 @@
 
 코스모스 블록체인을 이용한 CBDC 데모 프로젝트
 
+# ToDo
+
+- Cross-border payment
+- Privacy 기능
+
 # 파일 설명
 
 CBDC_server :  코스모스 블록체인에 쿼리를 보낼 서버
